@@ -34,3 +34,8 @@ Remove duplicates
 ```
 bcftools view -S \^captives_duplicates.txt all-merge-mpcr.vcf.gz -O z -o all-merge-dups-generics-removed-mpcr.vcf.gz
 ```
+Filter out SNPs with very low genotype quality (removing SNPs that we think are probably not real)
+```
+vcftools --gzvcf all-merge-dups-generics-removed-mpcr.vcf.gz --out all-merge-dups-generics-removed-GQ20-mpcr --minGQ 20 --recode
+```
+
