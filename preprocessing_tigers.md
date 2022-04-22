@@ -44,4 +44,8 @@ vcftools --vcf all-merge-dups-generics-removed-GQ20-mpcr.recode.vcf --singletons
 cut -f 1,2 all-merge-dups-generics-removed-GQ20-mpcr_singletons.singletons > singletons2remove.txt
 vcftools --vcf all-merge-dups-generics-removed-GQ20-mpcr.recode.vcf --exclude-positions singletons2remove.txt --recode --out all-merge-dups-generics-removed-GQ20-NoSing-mpcr
 ```
+Get the % missing data for each sample and use this to remove samples with more than 50% missing data
+```
+vcftools --vcf all-merge-dups-generics-removed-GQ20-NoSing-mpcr.recode.vcf --missing-indv --out all-merge-dups-generics-removed-GQ20-NoSing-missingness
+```
 
