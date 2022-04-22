@@ -38,4 +38,10 @@ Filter out SNPs with very low genotype quality (removing SNPs that we think are 
 ```
 vcftools --gzvcf all-merge-dups-generics-removed-mpcr.vcf.gz --out all-merge-dups-generics-removed-GQ20-mpcr --minGQ 20 --recode
 ```
+Remove singletons, including doubletons unique to one individual 
+```
+vcftools --vcf all-merge-dups-generics-removed-GQ20-mpcr.recode.vcf --singletons --out all-merge-dups-generics-removed-GQ20-mpcr_singletons
+cut -f 1,2 all-merge-dups-generics-removed-GQ20-mpcr_singletons.singletons > singletons2remove.txt
+vcftools --vcf all-merge-dups-generics-removed-GQ20-mpcr.recode.vcf --exclude-positions singletons2remove.txt --recode --out all-merge-dups-generics-removed-GQ20-NoSing-mpcr
+```
 
