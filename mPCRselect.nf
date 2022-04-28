@@ -1,3 +1,5 @@
+#!/usr/bin/env nextflow
+
 process removeSamples {
 
 	// Remove extraneous samples from VCF
