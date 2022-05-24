@@ -268,28 +268,6 @@ process optimizePi {
 	"""
 
 }
-/*
-process smartPCA {
-
-	// Choose sites that have highest SNP weightings for separating populations using EIGENSOFT smartPCA
-	// EIGENSOFT has a hard limit of 99 chr and specific chr naming requirements, so first need to map chr to arbitrary IDs
-	// NEEDS PCA, a way to remap the identified SNPs back
-	
-	publishDir "$params.outdir/PCASNPs", mode: 'copy'
-	
-	input:
-	path thin_vcf from thin_vcf_ch2
-	
-	"""
-	${params.mPCRbindir}/remap_chr.rb $thin_vcf 1> remapped.vcf 2> chr_maps.csv
-	vcftools --vcf remapped.vcf --plink --out ${thin_vcf.simpleName}
-	${params.mPCRbindir}/write_parfile.rb ${thin_vcf.simpleName} 1> convertf_parfile 2> smartpca_parfile
-	convertf -p convertf_parfile
-	smartpca -p smartpca_parfile
-	"""
-
-}
-*/
 
 process plinkPCA {
 
@@ -379,4 +357,47 @@ process finalSNPs {
 	gzip ${thin_vcf.simpleName}.fin.recode.vcf
 	"""
 	
+}
+
+process makePrimers {
+
+	// Make primer sets from selected SNPs
+	
+	publishDir "$params.outdir/15_mPCRPrimers", mode "copy"
+	
+	input:
+	path fin_snps from fin_vcf_ch
+	path refseq from params.refseq
+	
+	output:
+	
+	when:
+	params.makePrimers == 1
+	
+	"""
+	"""
+
+}
+
+process makeBaits {
+
+	// Make bait sets from selected SNPs using BaitsTools
+	
+	publishDir "$params.outdir/16_Baits", mode "copy"
+	
+	input:
+	path fin_snps from fin_vcf_ch
+	path refseq from params.refseq
+	val baitsparams from params.baitsparams
+	
+	output:
+	path ${fin_snps.simpleName}*
+	
+	when
+	params.makeBaits == 1
+	
+	"""
+	baitstools vcf2baits -i $fin_snps -r $refseq -e -o ${fin_snps.simpleName} $baitsparams
+	"""
+
 }
