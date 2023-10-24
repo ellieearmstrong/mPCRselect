@@ -7,17 +7,16 @@ process removeSamples {
 	publishDir "$params.outdir/01_RemoveSamples", mode: 'copy'
 
 	input:
-	path samples from params.samples
-	path raw_vcf from params.vcf
+	tuple path(raw_vcf), path(samples)
 	
 	output:
-	path "${raw_vcf.simpleName}.smp.recode.vcf.gz" into samp_vcf_ch
+	path "${raw_vcf.simpleName}.smp.vcf.gz", emit: vcf
 	path "${raw_vcf.simpleName}.smp.log"
 	
 	"""
-	vcftools --gzvcf $raw_vcf --out ${raw_vcf.simpleName}.smp --remove $samples --recode
+	vcftools --gzvcf $raw_vcf --remove $samples --recode -c | gzip > ${raw_vcf.simpleName}.smp.vcf.gz
 	cp .command.log ${raw_vcf.simpleName}.smp.log
-	gzip ${raw_vcf.simpleName}.smp.recode.vcf
+	
 	"""
 	
 }
@@ -29,17 +28,15 @@ process filterGQ {
 	publishDir "$params.outdir/02_GQSNPs", mode: 'copy'
 	
 	input:
-	path samp_vcf from samp_vcf_ch
-	val minGQ from params.minGQ
+	path samp_vcf
 	
 	output:
-	path "${samp_vcf.simpleName}.gq.recode.vcf.gz" into gq_vcf_ch
+	path "${samp_vcf.simpleName}.gq.vcf.gz", emit: vcf
 	path "${samp_vcf.simpleName}.gq.log"
 	
 	"""
-	vcftools --gzvcf $samp_vcf --out ${samp_vcf.simpleName}.gq --minGQ $minGQ --recode
+	vcftools --gzvcf $samp_vcf --minGQ ${params.minGQ} --recode -c | gzip > ${samp_vcf.simpleName}.gq.vcf.gz
 	cp .command.log ${samp_vcf.simpleName}.gq.log
-	gzip ${samp_vcf.simpleName}.gq.recode.vcf
 	"""
 
 }
@@ -51,18 +48,18 @@ process removeSingletons {
 	publishDir "$params.outdir/03_SingletonSNPs", mode: 'copy'
 	
 	input:
-	path gq_vcf from gq_vcf_ch
+	path gq_vcf
 	
 	output:
-	path "${gq_vcf.simpleName}.sng.recode.vcf.gz" into sng_vcf_ch
+	path "${gq_vcf.simpleName}.sng.vcf.gz", emit: vcf
 	path "${gq_vcf.simpleName}.singletons"
 	path "${gq_vcf.simpleName}.sng.log"
 	
 	"""
 	vcftools --gzvcf $gq_vcf --singletons --out ${gq_vcf.simpleName}
-	vcftools --gzvcf $gq_vcf --exclude-positions ${gq_vcf.simpleName}.singletons --recode --out ${gq_vcf.simpleName}.sng
+	vcftools --gzvcf $gq_vcf --exclude-positions ${gq_vcf.simpleName}.singletons --recode -c |  gzip > ${gq_vcf.simpleName}.sng.recode.vcf.gz
 	cp .command.log ${gq_vcf.simpleName}.sng.log
-	gzip ${gq_vcf.simpleName}.sng.recode.vcf
+	
 	"""
 
 }
@@ -74,17 +71,17 @@ process removeMissingIndv {
 	publishDir "$params.outdir/04_MissingIndvSNPs", mode: 'copy'
 	
 	input:
-	path sng_vcf from sng_vcf_ch
-	val indvMissing from params.indvMissing
+	path sng_vcf
 	
 	output:
-	path "${sng_vcf.simpleName}.indv.recode.vcf" into indv_vcf_ch
+	path "${sng_vcf.simpleName}.indv.vcf.gz", emit: vcf
 	path "${sng_vcf.simpleName}.indv.log"
+	path "${sng_vcf.simpleName}.imiss"
 	
 	"""
 	vcftools --gzvcf $sng_vcf --missing-indv --out ${sng_vcf.simpleName}
-	${params.mPCRbindir}/indvmiss.rb ${sng_vcf.simpleName}.imiss $indvMissing > missing_samples.txt
-	vcftools --gzvcf $sng_vcf --remove missing_samples.txt --recode --out ${sng_vcf.simpleName}.indv
+	indvmiss.rb ${sng_vcf.simpleName}.imiss ${params.indvMissing} > missing_samples.txt
+	vcftools --gzvcf $sng_vcf --remove missing_samples.txt --recode -c | gzip > ${sng_vcf.simpleName}.indv.gz
 	cp .command.log ${sng_vcf.simpleName}.indv.log
 	"""
 
@@ -97,18 +94,16 @@ process cullSNPs {
 	publishDir "$params.outdir/05_CullSNPs", mode: 'copy'
 	
 	input:
-	path indv_vcf from indv_vcf_ch
-	val cull from params.cull
+	path indv_vcf
 	
 	output:
-	path "${indv_vcf.simpleName}.cull.vcf.gz" into cull_vcf_ch
+	path "${indv_vcf.simpleName}.cull.vcf.gz", emit: vcf
 	path "${indv_vcf.simpleName}.cull.log"
 	
 	"""
-	${params.mPCRbindir}/Culling.py $indv_vcf $cull > ${indv_vcf.simpleName}.cull.vcf
-	vcftools --vcf ${indv_vcf.simpleName}.cull.vcf --out ${indv_vcf.simpleName}.cull
+	Culling.py <(gunzip -c $indv_vcf) ${params.cull} | gzip > ${indv_vcf.simpleName}.cull.vcf.gz
+	vcftools --gzvcf ${indv_vcf.simpleName}.cull.vcf.gz --out ${indv_vcf.simpleName}.cull
 	cp .command.log ${indv_vcf.simpleName}.cull.log
-	gzip ${indv_vcf.simpleName}.cull.vcf
 	"""
 	
 }
@@ -120,20 +115,18 @@ process filterMappability {
 	publishDir "$params.outdir/06_MapSNPs", mode: 'copy'
 	
 	input:
-	path cull_vcf from cull_vcf_ch
-	path map_bed from params.map_bed
+	tuple path(cull_vcf), path(map_bed)
 	
 	output:
-	path "${cull_vcf.simpleName}.map.vcf.gz" into map_vcf_ch
+	path "${cull_vcf.simpleName}.map.vcf.gz", emit: vcf
 	path "${cull_vcf.simpleName}.map.log"
 	
 	"""
 	bedtools sort -i $cull_vcf -header > cull_sort.vcf
 	bedtools sort -i $map_bed -header > map_sort.bed
-	bedtools intersect -a cull_sort.vcf -b map_sort.bed -v -header -sorted > ${cull_vcf.simpleName}.map.vcf
-	vcftools --vcf ${cull_vcf.simpleName}.map.vcf --out ${cull_vcf.simpleName}.map
+	bedtools intersect -a cull_sort.vcf -b map_sort.bed -v -header -sorted | gzip > ${cull_vcf.simpleName}.map.vcf.gz
+	vcftools --gzvcf ${cull_vcf.simpleName}.map.vcf.gz --out ${cull_vcf.simpleName}.map
 	cp .command.log ${cull_vcf.simpleName}.map.log
-	gzip *vcf
 	"""
 	
 }
@@ -146,17 +139,15 @@ process filterSites {
 	publishDir "$params.outdir/07_SiteFilterSNPs", mode: 'copy'
 	
 	input:
-	path map_vcf from map_vcf_ch
-	val siteMissing from params.siteMissing
+	path map_vcf
 	
 	output:
-	path "${map_vcf.simpleName}.site.recode.vcf.gz" into site_vcf_ch
+	path "${map_vcf.simpleName}.site.recode.vcf.gz", emit: vcf
 	path "${map_vcf.simpleName}.site.log"
 	
 	"""
-	vcftools --gzvcf $map_vcf --out ${map_vcf.simpleName}.site --remove-filtered-geno-all --remove-indels --min-alleles 2 --max-alleles 2 --max-missing $siteMissing --recode
+	vcftools --gzvcf $map_vcf --remove-filtered-geno-all --remove-indels --min-alleles 2 --max-alleles 2 --max-missing ${params.siteMissing} --recode -c | gzip > ${map_vcf.simpleName}.site.recode.vcf.gz
 	cp .command.log ${map_vcf.simpleName}.site.log
-	gzip ${map_vcf.simpleName}.site.recode.vcf
 	"""
 	
 }
@@ -169,18 +160,16 @@ process filterChr {
 	publishDir "$params.outdir/08_ChrSNPs", mode: 'copy'
 	
 	input:
-	path site_vcf from site_vcf_ch
-	path chrs from params.chr_file
+	tuple path(site_vcf), path(chrs)
 	
 	output:
-	path "${site_vcf.simpleName}.chr.recode.vcf.gz" into chr_vcf_ch
+	path "${site_vcf.simpleName}.chr.recode.vcf.gz", emit: vcf
 	path "${site_vcf.simpleName}.chr.log"
 	
 	"""
-	chr_line=`echo '--chr '`; chr_line+=`awk 1 ORS=' --chr ' ${chrs}`; chr_line=`echo \${chr_line% --chr }` # Awkwardly make into a --chr command-list > ${site_vcf.simpleName}.site.log
-	vcftools --gzvcf $site_vcf --recode --out ${site_vcf.simpleName}.chr \$chr_line
+	chr_line=`echo '--chr '`; chr_line+=`awk 1 ORS=' --chr ' ${chrs}`; chr_line=`echo \${chr_line% --chr }` # Make into a --chr command-list > ${site_vcf.simpleName}.site.log
+	vcftools --gzvcf $site_vcf --recode \$chr_line -c | gzip > ${site_vcf.simpleName}.chr.recode.vcf.gz
 	cp .command.log ${site_vcf.simpleName}.chr.log
-	gzip ${site_vcf.simpleName}.chr.recode.vcf
 	"""
 
 }
@@ -192,29 +181,18 @@ process thinSNPs {
 	publishDir "$params.outdir/09_ThinSNPs", mode: 'copy'
 	
 	input:
-	path chr_vcf from chr_vcf_ch
-	val thin from params.thin
+	path chr_vcf
 	
 	output:
-	path "${chr_vcf.simpleName}.thin.recode.vcf.gz" into thin_vcf_ch, thin_vcf_ch2, thin_vcf_ch3, thin_vcf_ch4
+	path "${chr_vcf.simpleName}.thin.recode.vcf.gz", emit: vcf
 	path "${chr_vcf.simpleName}.thin.log"
 	
 	"""
-	vcftools --gzvcf $chr_vcf --out ${chr_vcf.simpleName}.thin --recode --thin $thin
+	vcftools --gzvcf $chr_vcf --recode --thin ${params.thin} -c | gzip > ${chr_vcf.simpleName}.thin.recode.vcf.gz
 	cp .command.log ${chr_vcf.simpleName}.thin.log
-	gzip ${chr_vcf.simpleName}.thin.recode.vcf
 	"""
 	
 }
-
-Channel
-	.fromPath(params.sspecies)
-	.splitCsv(header:true)
-	.map { row -> tuple(row.Sample, row.Sspecies) }
-	.set { sspecies_ch }
-
-sspecies_list_ch = sspecies_ch.groupTuple(by: 1)
-
 
 process splitSubspecies {
 
@@ -223,11 +201,10 @@ process splitSubspecies {
 	publishDir "$params.outdir/10_SspeciesSNPs", mode: 'copy'
 	
 	input:
-	path thin_vcf from thin_vcf_ch
-	tuple val(samples), val(sspecies) from sspecies_list_ch
+	tuple path(thin_vcf), val(samples), val(sspecies)
 	
 	output:
-	path "${thin_vcf.simpleName}_${sspecies}.recode.vcf.gz" into sspec_vcf_ch
+	path "${thin_vcf.simpleName}_${sspecies}.recode.vcf.gz", emit: vcf
 	path "${thin_vcf.simpleName}_${sspecies}.log"
 	
 	script:
@@ -236,9 +213,8 @@ process splitSubspecies {
 		samplelist = samplelist + " --indv " + i
 	}
 	"""
-	vcftools --gzvcf $thin_vcf --out ${thin_vcf.simpleName}_${sspecies} --recode${samplelist}
+	vcftools --gzvcf $thin_vcf --recode${samplelist} -c | gzip > ${thin_vcf.simpleName}_${sspecies}.recode.vcf.gz
 	cp .command.log ${thin_vcf.simpleName}_${sspecies}.log
-	gzip ${thin_vcf.simpleName}_${sspecies}.recode.vcf
 	"""
 
 }
@@ -250,21 +226,17 @@ process optimizePi {
 	publishDir "$params.outdir/11_SspeciesPi", mode: 'copy'
 	
 	input:
-	path sspec_vcf from sspec_vcf_ch
-	val minPi from params.minPi
-	val maxPiSNPs from params.maxPiSNPs
-	val maxPiPC from params.maxPiPC
+	path sspec_vcf
 	
 	output:
-	path "${sspec_vcf.simpleName}.pi.recode.vcf.gz" into pi_vcf_ch
+	path "${sspec_vcf.simpleName}.pi.recode.vcf.gz", emit: vcf
 	path "${sspec_vcf.simpleName}.pi.log"
 	
 	"""
 	vcftools --gzvcf $sspec_vcf --site-pi --out ${sspec_vcf.simpleName}
-	${params.mPCRbindir}/get_pi_sites.rb ${sspec_vcf.simpleName}.sites.pi $minPi $maxPiSNPs $maxPiPC > pi_sites.txt
-	vcftools --gzvcf $sspec_vcf --positions pi_sites.txt --recode --out ${sspec_vcf.simpleName}.pi 
+	get_pi_sites.rb ${sspec_vcf.simpleName}.sites.pi ${params.minPi} ${params.maxPiSNPs} ${params.maxPiPC} > pi_sites.txt
+	vcftools --gzvcf $sspec_vcf --positions pi_sites.txt --recode -c | gzip > ${sspec_vcf.simpleName}.pi.recode.vcf.gz
 	cp .command.log ${sspec_vcf.simpleName}.pi.log
-	gzip ${sspec_vcf.simpleName}.pi.recode.vcf
 	"""
 
 }
@@ -277,22 +249,19 @@ process plinkPCA {
 	publishDir "$params.outdir/12_PCASNPs", mode: 'copy'
 	
 	input:
-	path thin_vcf from thin_vcf_ch2
-	val maxPCASNPs from params.maxPCASNPs
-	val maxPCAPC from params.maxPCAPC
+	path thin_vcf
 	
 	output:
 	path "${thin_vcf.simpleName}.pca.recode.vcf.gz" into pca_vcf_ch
 	path "${thin_vcf.simpleName}.pca.log"
 	
 	"""
-	${params.mPCRbindir}/remap_chr.rb $thin_vcf 1> remapped.vcf 2> chr_maps.csv
+	remap_chr.rb $thin_vcf 1> remapped.vcf 2> chr_maps.csv
 	vcftools --vcf remapped.vcf --plink --out ${thin_vcf.simpleName}
 	plink --file ${thin_vcf.simpleName} --pca var-wts --allow-extra-chr
-	${params.mPCRbindir}/get_PCA_snps.rb plink.eigenvec.var chr_maps.csv $maxPCASNPs $maxPCAPC > pca_sites.txt
-	vcftools --gzvcf $thin_vcf --positions pca_sites.txt --out ${thin_vcf.simpleName}.pca --recode
+	get_PCA_snps.rb plink.eigenvec.var chr_maps.csv ${params.maxPCASNPs} ${params.maxPCAPC} > pca_sites.txt
+	vcftools --gzvcf $thin_vcf --positions pca_sites.txt --recode -c | gzip > ${thin_vcf.simpleName}.pca.recode.vcf.gz
 	cp .command.log ${thin_vcf.simpleName}.pca.log
-	gzip ${thin_vcf.simpleName}.pca.recode.vcf
 	"""
 
 }
@@ -306,31 +275,23 @@ process fstSNPs {
 	publishDir "$params.outdir/13_FstSNPs", mode: 'copy'
 	
 	input:
-	path thin_vcf from thin_vcf_ch3
-	path sspecies from params.sspecies
-	val minFst from params.minFst
-	val maxFstSNPs from params.maxFstSNPs
-	val maxFstPC from params.maxFstPC
+	tuple path(thin_vcf), path(sspecies)
 		
 	output:
-	path "${thin_vcf.simpleName}.fst.recode.vcf.gz" into fst_vcf_ch
+	path "${thin_vcf.simpleName}.fst.recode.vcf.gz", emit: vcf
 	path "${thin_vcf.simpleName}.fst.log"
 	
 	"""
-	${params.mPCRbindir}/split_pops.rb $sspecies
+	split_pops.rb $sspecies
 	popline=''
 	for i in pop*.txt; do popline+=`echo '  --weir-fst-pop '\$i`; done
 	vcftools --gzvcf $thin_vcf\$popline
-	${params.mPCRbindir}/get_pi_sites.rb out.weir.fst $minFst $maxFstSNPs $maxFstPC > fst_snps.txt
-	vcftools --gzvcf $thin_vcf --positions fst_snps.txt --out ${thin_vcf.simpleName}.fst --recode
+	get_pi_sites.rb out.weir.fst ${params.minFst} ${params.maxFstSNPs} ${params.maxFstPC} > fst_snps.txt
+	vcftools --gzvcf $thin_vcf --positions fst_snps.txt --recode -c | gzip > ${thin_vcf.simpleName}.fst.recode.vcf.gz
 	cp .command.log ${thin_vcf.simpleName}.fst.log
-	gzip ${thin_vcf.simpleName}.fst.recode.vcf
 	"""
 
 }
-
-// Concatenate the SNP datasets for uniquing
-selected_snps_ch = pi_vcf_ch.mix(pca_vcf_ch, fst_vcf_ch)
 
 process finalSNPs {
 
@@ -339,22 +300,19 @@ process finalSNPs {
 	publishDir "$params.outdir/14_FinalSNPs", mode: 'copy'
 	
 	input:
-	path sel_snps from selected_snps_ch.collect()
-	val maxSNPs from params.maxSNPs
-	path thin_vcf from thin_vcf_ch4
+	tuple path(sel_snps), path(thin_vcf)
 	
 	output:
-	path "${thin_vcf.simpleName}.fin.recode.vcf.gz" into fin_vcf_ch
+	path "${thin_vcf.simpleName}.fin.vcf.gz", emit: vcf
 	path "${thin_vcf.simpleName}.fin.log"
 	
 	script:
 	filelist = sel_snps.join("\t")
 	"""
 	input=`echo $filelist`
-	${params.mPCRbindir}/get_best_snps.rb $maxSNPs \$input > best_snps.txt
-	vcftools --gzvcf $thin_vcf --positions best_snps.txt --out ${thin_vcf.simpleName}.fin --recode
+	get_best_snps.rb ${params.maxSNPs} \$input > best_snps.txt
+	vcftools --gzvcf $thin_vcf --positions best_snps.txt --recode -c | gzip > ${thin_vcf.simpleName}.fin.recode.vcf.gz
 	cp .command.log ${thin_vcf.simpleName}.fin.log
-	gzip ${thin_vcf.simpleName}.fin.recode.vcf
 	"""
 	
 }
@@ -366,8 +324,7 @@ process makePrimers {
 	publishDir "$params.outdir/15_mPCRPrimers", mode "copy"
 	
 	input:
-	path fin_snps from fin_vcf_ch
-	path refseq from params.refseq
+	tuple path(fin_snps), path(refseq)
 	
 	output:
 	
@@ -386,9 +343,7 @@ process makeBaits {
 	publishDir "$params.outdir/16_Baits", mode "copy"
 	
 	input:
-	path fin_snps from fin_vcf_ch
-	path refseq from params.refseq
-	val baitsparams from params.baitsparams
+	tuple path(fin_snps), path(refseq)
 	
 	output:
 	path ${fin_snps.simpleName}*
@@ -397,7 +352,29 @@ process makeBaits {
 	params.makeBaits == 1
 	
 	"""
-	baitstools vcf2baits -i $fin_snps -r $refseq -e -o ${fin_snps.simpleName} $baitsparams
+	baitstools vcf2baits -i $fin_snps -r $refseq -e -o ${fin_snps.simpleName} ${params.baitsparams}
 	"""
 
+}
+
+workflow {
+	main:
+		removeSamples(params.raw_vcf, params.samples)
+		filterGQ(removeSamples.out.vcf)
+		removeSingletons(filterGQ.out.vcf)
+		removeMissingIndv(removeSingletons.out.vcf)
+		cullSNPs(removeMissingIndv.out.vcf)
+		filterMappability(cullSNPs.out.vcf, params.map_bed)
+		filterSites(filterMappability.out.vcf)
+		filterChr(filterSites.out.vcf, params.chr_file)
+		thinSNPs(filterChr.out.vcf)
+		splitSubspecies(thinSNPs.out.vcf, Channel.fromPath(params.sspecies).splitCsv(header:true).map { row -> tuple(row.Sample, row.Sspecies) }.groupTuple(by: 1))
+		optimizePi(splitSubspecies.out.vcf)
+		plinkPCA(thinSNPs.out.vcf)
+		fstSNPs(thinSNPs.out.vcf, params.sspecies)
+		selected_snps_ch = optimizePi.out.vcf.mix(plinkPCA.out.vcf, fstSNPs.out.vcf).collect() // Concatenate the SNP datasets for uniquing
+		finalSNPs(selected_snps_ch, thinSNPs.out.vcf)
+		if (params.makePrimers == 1) { makePrimers(finalSNPs.out.vcf, params.refseq) }
+		if (params.makeBaits == 1) { makeBaits(finalSNPs.out.vcf, params.refseq) }
+		
 }
