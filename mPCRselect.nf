@@ -279,7 +279,8 @@ process fstSNPs {
 	publishDir "$params.outdir/13_FstSNPs", mode: 'copy'
 	
 	input:
-	tuple path(thin_vcf), path(sspecies)
+	path(thin_vcf)
+	path(sspecies)
 		
 	output:
 	path "${thin_vcf.simpleName}.fst.recode.vcf.gz", emit: vcf
@@ -304,7 +305,8 @@ process finalSNPs {
 	publishDir "$params.outdir/14_FinalSNPs", mode: 'copy'
 	
 	input:
-	tuple path(sel_snps), path(thin_vcf)
+	path(sel_snps)
+	path(thin_vcf)
 	
 	output:
 	path "${thin_vcf.simpleName}.fin.vcf.gz", emit: vcf
@@ -373,11 +375,11 @@ workflow {
 		filterChr(filterSites.out.vcf, params.chr_file)
 		thinSNPs(filterChr.out.vcf)
 		splitSubspecies(thinSNPs.out.vcf, Channel.fromPath(params.sspecies).splitCsv(header:true).map { row -> tuple(row.Sample, row.Sspecies) }.groupTuple(by: 1))
-		/* optimizePi(splitSubspecies.out.vcf)
+		optimizePi(splitSubspecies.out.vcf)
 		plinkPCA(thinSNPs.out.vcf)
-		fstSNPs(tuple thinSNPs.out.vcf, channel.fromPath(params.sspecies))
-		selected_snps_ch = optimizePi.out.vcf.mix(plinkPCA.out.vcf, fstSNPs.out.vcf).collect() // Concatenate the SNP datasets for uniquing
-		finalSNPs(tuple selected_snps_ch, thinSNPs.out.vcf)
+		fstSNPs(thinSNPs.out.vcf, params.sspecies)
+		/* selected_snps_ch = optimizePi.out.vcf.mix(plinkPCA.out.vcf, fstSNPs.out.vcf).collect() // Concatenate the SNP datasets for uniquing
+		finalSNPs(selected_snps_ch, thinSNPs.out.vcf)
 		if (params.makePrimers == 1) { makePrimers(tuple finalSNPs.out.vcf, channel.fromPath(params.refseq)) }
 		if (params.makeBaits == 1) { makeBaits(tuple finalSNPs.out.vcf, channel.fromPath(params.refseq)) } */
 		
