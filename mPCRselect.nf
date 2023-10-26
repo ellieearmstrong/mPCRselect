@@ -321,7 +321,7 @@ process makePrimers {
 
 	// Make primer sets from selected SNPs
 	
-	publishDir "$params.outdir/15_mPCRPrimers", mode "copy"
+	publishDir "$params.outdir/15_mPCRPrimers", mode: "copy"
 	
 	input:
 	tuple path(fin_snps), path(refseq)
@@ -340,7 +340,7 @@ process makeBaits {
 
 	// Make bait sets from selected SNPs using BaitsTools
 	
-	publishDir "$params.outdir/16_Baits", mode "copy"
+	publishDir "$params.outdir/16_Baits", mode: "copy"
 	
 	input:
 	tuple path(fin_snps), path(refseq)
