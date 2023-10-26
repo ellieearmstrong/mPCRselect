@@ -204,7 +204,8 @@ process splitSubspecies {
 	publishDir "$params.outdir/10_SspeciesSNPs", mode: 'copy'
 	
 	input:
-	tuple path(thin_vcf), val(samples), val(sspecies)
+	path(thin_vcf)
+	tuple val(samples), val(sspecies)
 	
 	output:
 	path "${thin_vcf.simpleName}_${sspecies}.recode.vcf.gz", emit: vcf
@@ -371,8 +372,8 @@ workflow {
 		filterSites(filterMappability.out.vcf)
 		filterChr(filterSites.out.vcf, params.chr_file)
 		thinSNPs(filterChr.out.vcf)
-		/* splitSubspecies(tuple thinSNPs.out.vcf, Channel.fromPath(params.sspecies).splitCsv(header:true).map { row -> tuple(row.Sample, row.Sspecies) }.groupTuple(by: 1))
-		optimizePi(splitSubspecies.out.vcf)
+		splitSubspecies(thinSNPs.out.vcf, Channel.fromPath(params.sspecies).splitCsv(header:true).map { row -> tuple(row.Sample, row.Sspecies) }.groupTuple(by: 1))
+		/* optimizePi(splitSubspecies.out.vcf)
 		plinkPCA(thinSNPs.out.vcf)
 		fstSNPs(tuple thinSNPs.out.vcf, channel.fromPath(params.sspecies))
 		selected_snps_ch = optimizePi.out.vcf.mix(plinkPCA.out.vcf, fstSNPs.out.vcf).collect() // Concatenate the SNP datasets for uniquing
