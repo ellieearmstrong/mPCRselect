@@ -115,7 +115,8 @@ process filterMappability {
 	publishDir "$params.outdir/06_MapSNPs", mode: 'copy'
 	
 	input:
-	tuple path(cull_vcf), path(map_bed)
+	path(cull_vcf)
+	path(map_bed)
 	
 	output:
 	path "${cull_vcf.simpleName}.map.vcf.gz", emit: vcf
@@ -364,7 +365,7 @@ workflow {
 		removeSingletons(filterGQ.out.vcf)
 		removeMissingIndv(removeSingletons.out.vcf)
 		cullSNPs(removeMissingIndv.out.vcf)
-		filterMappability(tuple cullSNPs.out.vcf, Channel.fromPath(params.map_bed))
+		filterMappability(cullSNPs.out.vcf, params.map_bed)
 		/* filterSites(filterMappability.out.vcf)
 		filterChr(tuple filterSites.out.vcf, params.chr_file)
 		thinSNPs(filterChr.out.vcf)
