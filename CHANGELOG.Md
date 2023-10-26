@@ -8,6 +8,7 @@ Updated to nextflow DSL2
 More efficient VCFtools output compression  
 Removed params.mPCRbindir  
 $launchDir instead of $baseDir  
+Rewrote plinkPCA process to use plink2  
 
 ### Version 0.1.0  
 First functional version of the mPCR SNP selection pipeline  
