@@ -359,7 +359,7 @@ process makeBaits {
 
 workflow {
 	main:
-		removeSamples(tuple channel.fromPath(params.raw_vcf), channel.fromPath(params.samples))
+		removeSamples(tuple channel.fromPath(params.vcf), channel.fromPath(params.samples))
 		filterGQ(removeSamples.out.vcf)
 		removeSingletons(filterGQ.out.vcf)
 		removeMissingIndv(removeSingletons.out.vcf)
