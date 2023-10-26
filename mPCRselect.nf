@@ -373,7 +373,7 @@ workflow {
 		plinkPCA(thinSNPs.out.vcf)
 		fstSNPs(tuple thinSNPs.out.vcf, channel.fromPath(params.sspecies))
 		selected_snps_ch = optimizePi.out.vcf.mix(plinkPCA.out.vcf, fstSNPs.out.vcf).collect() // Concatenate the SNP datasets for uniquing
-		finalSNPs(selected_snps_ch, thinSNPs.out.vcf)
+		finalSNPs(tuple selected_snps_ch, thinSNPs.out.vcf)
 		if (params.makePrimers == 1) { makePrimers(tuple finalSNPs.out.vcf, channel.fromPath(params.refseq)) }
 		if (params.makeBaits == 1) { makeBaits(tuple finalSNPs.out.vcf, channel.fromPath(params.refseq)) }
 		
