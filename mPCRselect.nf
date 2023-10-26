@@ -7,7 +7,8 @@ process removeSamples {
 	publishDir "$params.outdir/01_RemoveSamples", mode: 'copy'
 
 	input:
-	tuple path(raw_vcf), path(samples)
+	path(raw_vcf)
+	path(samples)
 	
 	output:
 	path "${raw_vcf.simpleName}.smp.vcf.gz", emit: vcf
@@ -161,7 +162,8 @@ process filterChr {
 	publishDir "$params.outdir/08_ChrSNPs", mode: 'copy'
 	
 	input:
-	tuple path(site_vcf), path(chrs)
+	path(site_vcf)
+	path(chrs)
 	
 	output:
 	path "${site_vcf.simpleName}.chr.recode.vcf.gz", emit: vcf
@@ -360,16 +362,16 @@ process makeBaits {
 
 workflow {
 	main:
-		removeSamples(tuple params.vcf, params.samples)
+		removeSamples(params.vcf, params.samples)
 		filterGQ(removeSamples.out.vcf)
 		removeSingletons(filterGQ.out.vcf)
 		removeMissingIndv(removeSingletons.out.vcf)
 		cullSNPs(removeMissingIndv.out.vcf)
 		filterMappability(cullSNPs.out.vcf, params.map_bed)
-		/* filterSites(filterMappability.out.vcf)
-		filterChr(tuple filterSites.out.vcf, params.chr_file)
+		filterSites(filterMappability.out.vcf)
+		filterChr(filterSites.out.vcf, params.chr_file)
 		thinSNPs(filterChr.out.vcf)
-		splitSubspecies(tuple thinSNPs.out.vcf, Channel.fromPath(params.sspecies).splitCsv(header:true).map { row -> tuple(row.Sample, row.Sspecies) }.groupTuple(by: 1))
+		/* splitSubspecies(tuple thinSNPs.out.vcf, Channel.fromPath(params.sspecies).splitCsv(header:true).map { row -> tuple(row.Sample, row.Sspecies) }.groupTuple(by: 1))
 		optimizePi(splitSubspecies.out.vcf)
 		plinkPCA(thinSNPs.out.vcf)
 		fstSNPs(tuple thinSNPs.out.vcf, channel.fromPath(params.sspecies))
