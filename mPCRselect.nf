@@ -368,7 +368,7 @@ workflow {
 		filterSites(filterMappability.out.vcf)
 		filterChr(tuple filterSites.out.vcf, channel.fromPath(params.chr_file))
 		thinSNPs(filterChr.out.vcf)
-		splitSubspecies(thinSNPs.out.vcf, Channel.fromPath(params.sspecies).splitCsv(header:true).map { row -> tuple(row.Sample, row.Sspecies) }.groupTuple(by: 1))
+		splitSubspecies(tuple thinSNPs.out.vcf, Channel.fromPath(params.sspecies).splitCsv(header:true).map { row -> tuple(row.Sample, row.Sspecies) }.groupTuple(by: 1))
 		optimizePi(splitSubspecies.out.vcf)
 		plinkPCA(thinSNPs.out.vcf)
 		fstSNPs(tuple thinSNPs.out.vcf, channel.fromPath(params.sspecies))
