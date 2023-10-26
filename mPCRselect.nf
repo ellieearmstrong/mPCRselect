@@ -252,7 +252,7 @@ process plinkPCA {
 	path thin_vcf
 	
 	output:
-	path "${thin_vcf.simpleName}.pca.recode.vcf.gz" into pca_vcf_ch
+	path "${thin_vcf.simpleName}.pca.recode.vcf.gz", emit: vcf
 	path "${thin_vcf.simpleName}.pca.log"
 	
 	"""
