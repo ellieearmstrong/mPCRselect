@@ -261,7 +261,7 @@ process plinkPCA {
 	
 	"""
 	remap_chr.rb $thin_vcf 1> remapped.vcf 2> chr_maps.csv
-	plink2 --vcf remapped.vcf --pca var-wts --allow-extra-chr
+	plink2 --vcf remapped.vcf --pca allele-wts --allow-extra-chr
 	get_PCA_snps.rb plink.eigenvec.var chr_maps.csv ${params.maxPCASNPs} ${params.maxPCAPC} > pca_sites.txt
 	vcftools --gzvcf $thin_vcf --positions pca_sites.txt --recode -c | gzip > ${thin_vcf.simpleName}.pca.recode.vcf.gz
 	cp .command.log ${thin_vcf.simpleName}.pca.log
