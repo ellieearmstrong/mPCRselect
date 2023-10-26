@@ -366,7 +366,7 @@ workflow {
 		cullSNPs(removeMissingIndv.out.vcf)
 		filterMappability(tuple cullSNPs.out.vcf, channel.fromPath(params.map_bed))
 		filterSites(filterMappability.out.vcf)
-		filterChr(filterSites.out.vcf, params.chr_file)
+		filterChr(tuple filterSites.out.vcf, channel.fromPath(params.chr_file))
 		thinSNPs(filterChr.out.vcf)
 		splitSubspecies(thinSNPs.out.vcf, Channel.fromPath(params.sspecies).splitCsv(header:true).map { row -> tuple(row.Sample, row.Sspecies) }.groupTuple(by: 1))
 		optimizePi(splitSubspecies.out.vcf)
