@@ -16,13 +16,15 @@ end
 @snps = [] # Array of SNPs
 File.open(ARGV[0]) do |f1|
 	while line = f1.gets
-		line_arr = line.split
-		chr = @mappings[line_arr[0]]
-		pos = line_arr[1].split(':')[1]
-		loading1 = line_arr[2].to_f.abs
-		loading2 = line_arr[3].to_f.abs
-		@snps.push([chr + "\t" + pos, loading1, loading2])
-		@pos_count += 1.0
+		if line[0].chr != '#' # Remove header line
+			line_arr = line.split
+			chr = @mappings[line_arr[0]]
+			pos = line_arr[1].split(':')[1]
+			loading1 = line_arr[2].to_f.abs
+			loading2 = line_arr[3].to_f.abs
+			@snps.push([chr + "\t" + pos, loading1, loading2])
+			@pos_count += 1.0
+		end
 	end
 end
 
