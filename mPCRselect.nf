@@ -57,7 +57,7 @@ process removeSingletons {
 	
 	"""
 	vcftools --gzvcf $gq_vcf --singletons --out ${gq_vcf.simpleName}
-	vcftools --gzvcf $gq_vcf --exclude-positions ${gq_vcf.simpleName}.singletons --recode -c |  gzip > ${gq_vcf.simpleName}.sng.recode.vcf.gz
+	vcftools --gzvcf $gq_vcf --exclude-positions ${gq_vcf.simpleName}.singletons --recode -c |  gzip > ${gq_vcf.simpleName}.sng.vcf.gz
 	cp .command.log ${gq_vcf.simpleName}.sng.log
 	
 	"""
