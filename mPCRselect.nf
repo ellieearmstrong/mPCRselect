@@ -318,7 +318,7 @@ process finalSNPs {
 	"""
 	input=`echo $filelist`
 	get_best_snps.rb ${params.maxSNPs} \$input > best_snps.txt
-	vcftools --gzvcf $thin_vcf --positions best_snps.txt --recode -c | gzip > ${thin_vcf.simpleName}.fin.recode.vcf.gz
+	vcftools --gzvcf $thin_vcf --positions best_snps.txt --recode -c | gzip > ${thin_vcf.simpleName}.fin.vcf.gz
 	cp .command.log ${thin_vcf.simpleName}.fin.log
 	"""
 	
