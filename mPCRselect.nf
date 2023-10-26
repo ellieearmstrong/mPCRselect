@@ -249,6 +249,7 @@ process plinkPCA {
 
 	// Choose sites that have highest SNP weightings for separating populations using PLINK PCA
 	// Remap chr names to ensure compatibility
+	// Only use biallelic SNPs for simplicity
 	
 	publishDir "$params.outdir/12_PCASNPs", mode: 'copy'
 	
@@ -261,9 +262,9 @@ process plinkPCA {
 	
 	"""
 	remap_chr.rb $thin_vcf 1> remapped.vcf 2> chr_maps.csv
-	vcftools --vcf remapped.vcf --plink --out ${thin_vcf.simpleName}
+	vcftools --vcf remapped.vcf --min-alleles 2 --max-alleles 2 --plink --out ${thin_vcf.simpleName}
 	plink2 --pedmap ${thin_vcf.simpleName} --pca biallelic-var-wts --allow-extra-chr --bad-freqs
-	get_PCA_snps.rb plink2.eigenvec.allele chr_maps.csv ${params.maxPCASNPs} ${params.maxPCAPC} > pca_sites.txt
+	get_PCA_snps.rb plink2.eigenvec.var chr_maps.csv ${params.maxPCASNPs} ${params.maxPCAPC} > pca_sites.txt
 	vcftools --gzvcf $thin_vcf --positions pca_sites.txt --recode -c | gzip > ${thin_vcf.simpleName}.pca.recode.vcf.gz
 	cp .command.log ${thin_vcf.simpleName}.pca.log
 	"""
