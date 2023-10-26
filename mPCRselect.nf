@@ -364,17 +364,17 @@ workflow {
 		removeSingletons(filterGQ.out.vcf)
 		removeMissingIndv(removeSingletons.out.vcf)
 		cullSNPs(removeMissingIndv.out.vcf)
-		filterMappability(tuple cullSNPs.out.vcf, channel.fromPath(params.map_bed))
+		filterMappability(tuple cullSNPs.out.vcf, params.map_bed)
 		filterSites(filterMappability.out.vcf)
-		filterChr(tuple filterSites.out.vcf, channel.fromPath(params.chr_file))
+		filterChr(tuple filterSites.out.vcf, params.chr_file))
 		thinSNPs(filterChr.out.vcf)
-		splitSubspecies(tuple thinSNPs.out.vcf, Channel.fromPath(params.sspecies).splitCsv(header:true).map { row -> tuple(row.Sample, row.Sspecies) }.groupTuple(by: 1))
+		/* splitSubspecies(tuple thinSNPs.out.vcf, Channel.fromPath(params.sspecies).splitCsv(header:true).map { row -> tuple(row.Sample, row.Sspecies) }.groupTuple(by: 1))
 		optimizePi(splitSubspecies.out.vcf)
 		plinkPCA(thinSNPs.out.vcf)
 		fstSNPs(tuple thinSNPs.out.vcf, channel.fromPath(params.sspecies))
 		selected_snps_ch = optimizePi.out.vcf.mix(plinkPCA.out.vcf, fstSNPs.out.vcf).collect() // Concatenate the SNP datasets for uniquing
 		finalSNPs(tuple selected_snps_ch, thinSNPs.out.vcf)
 		if (params.makePrimers == 1) { makePrimers(tuple finalSNPs.out.vcf, channel.fromPath(params.refseq)) }
-		if (params.makeBaits == 1) { makeBaits(tuple finalSNPs.out.vcf, channel.fromPath(params.refseq)) }
+		if (params.makeBaits == 1) { makeBaits(tuple finalSNPs.out.vcf, channel.fromPath(params.refseq)) } */
 		
 }
