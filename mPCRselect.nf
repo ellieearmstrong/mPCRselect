@@ -364,7 +364,7 @@ workflow {
 		removeSingletons(filterGQ.out.vcf)
 		removeMissingIndv(removeSingletons.out.vcf)
 		cullSNPs(removeMissingIndv.out.vcf)
-		filterMappability(tuple cullSNPs.out.vcf, params.map_bed)
+		filterMappability(tuple cullSNPs.out.vcf, path(params.map_bed))
 		/* filterSites(filterMappability.out.vcf)
 		filterChr(tuple filterSites.out.vcf, params.chr_file)
 		thinSNPs(filterChr.out.vcf)
