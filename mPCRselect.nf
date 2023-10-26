@@ -81,7 +81,7 @@ process removeMissingIndv {
 	"""
 	vcftools --gzvcf $sng_vcf --missing-indv --out ${sng_vcf.simpleName}
 	indvmiss.rb ${sng_vcf.simpleName}.imiss ${params.indvMissing} > missing_samples.txt
-	vcftools --gzvcf $sng_vcf --remove missing_samples.txt --recode -c | gzip > ${sng_vcf.simpleName}.indv.gz
+	vcftools --gzvcf $sng_vcf --remove missing_samples.txt --recode -c | gzip > ${sng_vcf.simpleName}.indv.vcf.gz
 	cp .command.log ${sng_vcf.simpleName}.indv.log
 	"""
 
