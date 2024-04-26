@@ -1,2 +1,2 @@
-# tiger_mpcr
-random scripts for prep of tiger mpcr project and testing
+# mPCRselect
+Pipeline for selecting ancestry and individual identification informative SNPs from variant call files (VCF).
