@@ -1,32 +1,10 @@
 #!/usr/bin/env nextflow
 
-process removeSamples {
-
-	// Remove extraneous samples from VCF
-	
-	publishDir "$params.outdir/01_RemoveSamples", mode: 'copy'
-
-	input:
-	path(raw_vcf)
-	path(samples)
-	
-	output:
-	path "${raw_vcf.simpleName}.smp.vcf.gz", emit: vcf
-	path "${raw_vcf.simpleName}.smp.log"
-	
-	"""
-	vcftools --gzvcf $raw_vcf --remove $samples --recode -c | gzip > ${raw_vcf.simpleName}.smp.vcf.gz
-	cp .command.log ${raw_vcf.simpleName}.smp.log
-	
-	"""
-	
-}
-
 process filterGQ {
 
 	// Remove low quality sites
 	
-	publishDir "$params.outdir/02_GQSNPs", mode: 'copy'
+	publishDir "$params.outdir/01_GQSNPs", mode: 'copy'
 	
 	input:
 	path samp_vcf
@@ -46,7 +24,7 @@ process removeSingletons {
 
 	// Remove singletons and individual-unique doubletons
 	
-	publishDir "$params.outdir/03_SingletonSNPs", mode: 'copy'
+	publishDir "$params.outdir/02_SingletonSNPs", mode: 'copy'
 	
 	input:
 	path gq_vcf
@@ -69,7 +47,7 @@ process removeMissingIndv {
 
 	// Remove individuals with too much missing data
 	
-	publishDir "$params.outdir/04_MissingIndvSNPs", mode: 'copy'
+	publishDir "$params.outdir/03_MissingIndvSNPs", mode: 'copy'
 	
 	input:
 	path sng_vcf
@@ -92,7 +70,7 @@ process cullSNPs {
 
 	// Remove SNPs that have another SNP within the cull-distance
 	
-	publishDir "$params.outdir/05_CullSNPs", mode: 'copy'
+	publishDir "$params.outdir/04_CullSNPs", mode: 'copy'
 	
 	input:
 	path indv_vcf
@@ -113,7 +91,7 @@ process filterMappability {
 
 	// Remove SNPs in regions of low mappability
 	
-	publishDir "$params.outdir/06_MapSNPs", mode: 'copy'
+	publishDir "$params.outdir/05_MapSNPs", mode: 'copy'
 	
 	input:
 	path(cull_vcf)
@@ -138,7 +116,7 @@ process filterSites {
 	// Remove indels, non-bialleleic SNPs, sites with too much missing data
 	// Remove sites without PASS flag
 	
-	publishDir "$params.outdir/07_SiteFilterSNPs", mode: 'copy'
+	publishDir "$params.outdir/06_SiteFilterSNPs", mode: 'copy'
 	
 	input:
 	path map_vcf
@@ -159,7 +137,7 @@ process filterChr {
 	// Retain sites only on chr in list
 	// Modified from filterChr of RatesTools 0.3 (Campana & Armstrong 2020-2021)
 	
-	publishDir "$params.outdir/08_ChrSNPs", mode: 'copy'
+	publishDir "$params.outdir/07_ChrSNPs", mode: 'copy'
 	
 	input:
 	path(site_vcf)
@@ -181,7 +159,7 @@ process thinSNPs {
 
 	// Thin remaining SNPs by distance using VCFtools
 	
-	publishDir "$params.outdir/09_ThinSNPs", mode: 'copy'
+	publishDir "$params.outdir/08_ThinSNPs", mode: 'copy'
 	
 	input:
 	path chr_vcf
@@ -201,7 +179,7 @@ process splitSubspecies {
 
 	// Split VCF by assigned subspecies
 	
-	publishDir "$params.outdir/10_SspeciesSNPs", mode: 'copy'
+	publishDir "$params.outdir/09_SspeciesSNPs", mode: 'copy'
 	
 	input:
 	path(thin_vcf)
@@ -227,7 +205,7 @@ process optimizePi {
 
 	// Choose sites with the highest pi values within subspecies
 	
-	publishDir "$params.outdir/11_SspeciesPi", mode: 'copy'
+	publishDir "$params.outdir/10_SspeciesPi", mode: 'copy'
 	
 	input:
 	path sspec_vcf
@@ -251,7 +229,7 @@ process plinkPCA {
 	// Remap chr names to ensure compatibility
 	// Only use biallelic SNPs for simplicity
 	
-	publishDir "$params.outdir/12_PCASNPs", mode: 'copy'
+	publishDir "$params.outdir/11_PCASNPs", mode: 'copy'
 	
 	input:
 	path thin_vcf
@@ -277,7 +255,7 @@ process fstSNPs {
 	// First have to convert the CSV file of subspecies assignments to individual population lists
 	// Using get_pi_sites.rb because the code would be identical for Fst
 	
-	publishDir "$params.outdir/13_FstSNPs", mode: 'copy'
+	publishDir "$params.outdir/12_FstSNPs", mode: 'copy'
 	
 	input:
 	path(thin_vcf)
@@ -303,7 +281,7 @@ process finalSNPs {
 
 	// Merge datasets and find most observed SNP selections
 	
-	publishDir "$params.outdir/14_FinalSNPs", mode: 'copy'
+	publishDir "$params.outdir/13_FinalSNPs", mode: 'copy'
 	
 	input:
 	path(sel_snps)
@@ -328,7 +306,7 @@ process makePrimers {
 
 	// Make primer sets from selected SNPs
 	
-	publishDir "$params.outdir/15_mPCRPrimers", mode: "copy"
+	publishDir "$params.outdir/14_mPCRPrimers", mode: "copy"
 	
 	input:
 	tuple path(fin_snps), path(refseq)
@@ -347,7 +325,7 @@ process makeBaits {
 
 	// Make bait sets from selected SNPs using BaitsTools
 	
-	publishDir "$params.outdir/16_Baits", mode: "copy"
+	publishDir "$params.outdir/15_Baits", mode: "copy"
 	
 	input:
 	tuple path(fin_snps), path(refseq)
@@ -366,8 +344,7 @@ process makeBaits {
 
 workflow {
 	main:
-		removeSamples(params.vcf, params.samples)
-		filterGQ(removeSamples.out.vcf)
+		filterGQ(params.vcf)
 		removeSingletons(filterGQ.out.vcf)
 		removeMissingIndv(removeSingletons.out.vcf)
 		cullSNPs(removeMissingIndv.out.vcf)

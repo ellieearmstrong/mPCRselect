@@ -1,5 +1,9 @@
 # CHANGELOG  
 
+### Versions 0.3.0  
+Removed removeSamples process
+
+
 ### Version 0.2.0  
 Added dummy process to generate mPCR primers  
 Added process to generate BaitsTools baits  
