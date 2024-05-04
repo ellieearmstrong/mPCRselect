@@ -281,11 +281,13 @@ process fstSNPs {
 
 process makeFstPlots {
 
+	publishDir "$params.outdir/13_FstPlots", mode: 'copy'
+
 	input:
 	tuple path(pop1_raw), path(pop2_raw), val(rep)
 	
 	output:
-	
+	path "${pop_raw1.simpleName}_${pop2_raw.simpleName}_rep${rep}*"
 	
 	"""
 	#!/usr/bin/env bash
@@ -302,7 +304,7 @@ process finalSNPs {
 
 	// Merge datasets and find most observed SNP selections
 	
-	publishDir "$params.outdir/13_FinalSNPs", mode: 'copy'
+	publishDir "$params.outdir/14_FinalSNPs", mode: 'copy'
 	
 	input:
 	path(sel_snps)
@@ -378,8 +380,7 @@ workflow {
 		optimizePi(splitPopulations.out.vcf)
 		fstSNPs(plinkLD.out.vcf, params.populations)
 		fst_ch = splitPopulations.out.vcf.combine(splitPopulations.out.vcf).filter { it[0] != it[1]}.map { it -> it.sort() }.unique().combine(Channel.of(1..params.Fst_plot_repet))
-		fst_ch.view()
-		//makeFstPlots(splitPopulations.out.vcf.collect())
+		makeFstPlots(fst_ch)
 		selected_snps_ch = optimizePi.out.vcf.mix(fstSNPs.out.vcf).collect() // Concatenate the SNP datasets for uniquing
 		finalSNPs(selected_snps_ch, plinkLD.out.vcf)
 		if (params.makePrimers == 1) { makePrimers(tuple finalSNPs.out.vcf, channel.fromPath(params.refseq)) }
