@@ -223,7 +223,7 @@ process splitPopulations {
 	}
 	"""
 	vcftools --gzvcf $thin_vcf --recode${samplelist} -c | gzip > ${thin_vcf.simpleName}_${population}.vcf.gz
-	plink2 --vcf ${thin_vcf.simpleName}_${population}.vcf.gz --export A --out ${thin_vcf.simpleName}_${population}
+	plink2 --vcf ${thin_vcf.simpleName}_${population}.vcf.gz --allow-extra-chr --export A --out ${thin_vcf.simpleName}_${population}
 	cp .command.log ${thin_vcf.simpleName}_${population}.log
 	"""
 
