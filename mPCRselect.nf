@@ -179,7 +179,7 @@ process splitSubspecies {
 
 	// Split VCF by assigned subspecies
 	
-	publishDir "$params.outdir/09_SspeciesSNPs", mode: 'copy'
+	publishDir "$params.outdir/09_PopulationsSNPs", mode: 'copy'
 	
 	input:
 	path(thin_vcf)
@@ -203,9 +203,9 @@ process splitSubspecies {
 
 process optimizePi {
 
-	// Choose sites with the highest pi values within subspecies
+	// Choose sites with the highest pi values within subspecies/populations
 	
-	publishDir "$params.outdir/10_SspeciesPi", mode: 'copy'
+	publishDir "$params.outdir/10_PopulationsPi", mode: 'copy'
 	
 	input:
 	path sspec_vcf
@@ -223,30 +223,22 @@ process optimizePi {
 
 }
 
-process plinkPCA {
+process plinkLD {
 
-	// Choose sites that have highest SNP weightings for separating populations using PLINK PCA
-	// Remap chr names to ensure compatibility
-	// Only use biallelic SNPs for simplicity
+	// Remove sites in LD using PLINK 2
 	
-	publishDir "$params.outdir/11_PCASNPs", mode: 'copy'
+	publishDir "$params.outdir/11_PlinkLD", mode: 'copy'
 	
 	input:
 	path thin_vcf
 	
 	output:
-	path "${thin_vcf.simpleName}.pca.recode.vcf.gz", emit: vcf
-	path "${thin_vcf.simpleName}.pca.log"
 	
 	"""
-	remap_chr.rb $thin_vcf 1> remapped.vcf 2> chr_maps.csv
-	vcftools --vcf remapped.vcf --min-alleles 2 --max-alleles 2 --plink --out ${thin_vcf.simpleName}
-	plink2 --pedmap ${thin_vcf.simpleName} --pca biallelic-var-wts --allow-extra-chr --bad-freqs
-	get_PCA_snps.rb plink2.eigenvec.var chr_maps.csv ${params.maxPCASNPs} ${params.maxPCAPC} > pca_sites.txt
-	vcftools --gzvcf $thin_vcf --positions pca_sites.txt --recode -c | gzip > ${thin_vcf.simpleName}.pca.recode.vcf.gz
-	cp .command.log ${thin_vcf.simpleName}.pca.log
+	plink2 --vcf $thin_vcf --maf ${params.minMAF} -indep-pairwise ${params.plinkLD_indep_pairwise} --allow-extra-chr --set-all-var-ids '@:#' --make-bed --out tmp
+	plink2 --bfile tmp --extract test.prune.in --make-bed --allow-extra-chr --out test.pruned
 	"""
-
+	
 }
 
 process fstSNPs {
@@ -354,7 +346,7 @@ workflow {
 		thinSNPs(filterChr.out.vcf)
 		splitSubspecies(thinSNPs.out.vcf, Channel.fromPath(params.sspecies).splitCsv(header:true).map { row -> tuple(row.Sample, row.Sspecies) }.groupTuple(by: 1))
 		optimizePi(splitSubspecies.out.vcf)
-		plinkPCA(thinSNPs.out.vcf)
+		plinkLD(thinSNPs.out.vcf)
 		fstSNPs(thinSNPs.out.vcf, params.sspecies)
 		selected_snps_ch = optimizePi.out.vcf.mix(plinkPCA.out.vcf, fstSNPs.out.vcf).collect() // Concatenate the SNP datasets for uniquing
 		finalSNPs(selected_snps_ch, thinSNPs.out.vcf)

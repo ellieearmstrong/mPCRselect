@@ -1,7 +1,9 @@
 # CHANGELOG  
 
 ### Versions 0.3.0  
-Removed removeSamples process
+Removed removeSamples process  
+Removed PCA steps and associated scripts  
+Added PLINK LD thinning  
 
 
 ### Version 0.2.0  
