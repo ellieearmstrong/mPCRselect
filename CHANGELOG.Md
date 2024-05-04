@@ -4,6 +4,9 @@
 Removed removeSamples process  
 Removed PCA steps and associated scripts  
 Added PLINK LD thinning  
+Subspecies now called populations  
+Removed '.recode' from VCF names  
+splitPopulations converts to PLINK2 raw format  
 
 
 ### Version 0.2.0  
