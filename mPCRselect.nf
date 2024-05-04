@@ -379,7 +379,8 @@ workflow {
 		fstSNPs(plinkLD.out.vcf, params.populations)
 		fst_ch = splitPopulations.out.vcf.combine(splitPopulations.out.vcf).filter { it[0] != it[1]}
 		fst_ch.map { it -> it.sort() }
-		fst_ch.toSortedList { a, b -> b[1] <=> a[1] }.toSortedList {a, b -> b[0] <=> a[0 }
+		fst_ch.toSortedList { a, b -> b[1] <=> a[1] }
+		fst_ch.toSortedList { a, b -> b[0] <=> a[0 }
 		fst_ch.view()
 		//makeFstPlots(splitPopulations.out.vcf.collect())
 		selected_snps_ch = optimizePi.out.vcf.mix(fstSNPs.out.vcf).collect() // Concatenate the SNP datasets for uniquing
