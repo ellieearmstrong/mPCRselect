@@ -194,7 +194,7 @@ process plinkLD {
 	"""
 	plink2 --vcf $thin_vcf --maf ${params.minMAF} -indep-pairwise ${params.plinkLD_indep_pairwise} --bad-ld --allow-extra-chr --set-all-var-ids '@:#' --make-bed --out tmp
 	plink2 --bfile tmp --extract tmp.prune.in --make-bed --allow-extra-chr --export vcf --out ${thin_vcf.simpleName}.pruned
-	gzip ${thin_vcf.simpleName}.pruned
+	gzip ${thin_vcf.simpleName}.pruned.vcf
 	cp .command.log ${thin_vcf.simpleName}.ld.log
 	
 	"""
