@@ -287,7 +287,7 @@ process makeFstPlots {
 	tuple path(pop1_raw), path(pop2_raw), val(rep)
 	
 	output:
-	path "${pop_raw1.simpleName}_${pop2_raw.simpleName}_rep${rep}*"
+	path "${pop1_raw.simpleName}_${pop2_raw.simpleName}_rep${rep}*"
 	
 	"""
 	#!/usr/bin/env bash
