@@ -404,7 +404,8 @@ workflow {
 		fst_ch = splitPopulations.out.raw.combine(splitPopulations.out.raw).filter { it[0] != it[1]}.map { it -> it.sort() }.unique().combine(Channel.of(1..params.Fst_plot_repet))
 		makeFstPlots(fst_ch)
 		fst_selected_snps_ch = makeFstPlots.out.fst_csv.mix(fstSNPs.out.vcf).collect() // Concatenate the Fst SNP datasets for uniquing
-		fstFinalSNPs(fst_selected_snps_ch, plinkLD.out.vcf) | concatFinalSNPs
+		fstFinalSNPs(fst_selected_snps_ch, plinkLD.out.vcf)
+		concatFinalSNPs(fstFinalSNPs.out.vcf, optimizePi.out.vcf)
 		if (params.makePrimers == 1) { makePrimers(tuple concatFinalSNPs.out.vcf, channel.fromPath(params.refseq)) }
 		if (params.makeBaits == 1) { makeBaits(tuple concatFinalSNPs.out.vcf, channel.fromPath(params.refseq)) }
 		
