@@ -15,9 +15,6 @@ resamples <- as.numeric(fst_args[5]) # Number of individuals to resample data to
 requested_snps <- as.numeric(fst_args[6]) # Maximum number of SNPs to evaluate
 snp_interval <- as.numeric(fst_args[7]) # Interval at which to plot SNP accuracy
 
-if (requested_snps > totalsnps) {requested_snps <- totalsnps} # Fix bad values
-if (snp_interval > requested_snps) {snp_interval <- requested_snps} # Fix bad values
-
 num_individuals1 <- rep(totalind1, each = 2 * (requested_snps/snp_interval))
 num_individuals2 <- rep(totalind2, each = 2 * (requested_snps/snp_interval))
 nmarks <- c()
@@ -46,6 +43,8 @@ common_columns_ab = intersect(names(dfPop1), names(dfPop2))
 dfPop1 <- dfPop1[, common_columns_ab]
 dfPop2 <- dfPop2[, common_columns_ab]
 totalsnps <- ncol(dfPop1) # Adjust maximum number of SNPs to those that can be used
+if (requested_snps > totalsnps) {requested_snps <- totalsnps} # Fix bad values
+if (snp_interval > requested_snps) {snp_interval <- requested_snps} # Fix bad values
 
 markers <- colnames(dfPop1)
 frequencies <- colSums(dfPop1) / (2 * resamples)
