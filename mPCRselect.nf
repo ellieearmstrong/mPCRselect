@@ -14,11 +14,19 @@ process removeSamples {
 	path "${raw_vcf.simpleName}.smp.vcf.gz", emit: vcf
 	path "${raw_vcf.simpleName}.smp.log"
 	
-	"""
-	vcftools --gzvcf $raw_vcf --remove $samples --recode -c | gzip > ${raw_vcf.simpleName}.smp.vcf.gz
-	cp .command.log ${raw_vcf.simpleName}.smp.log
+	script:
+	if (params.samples == "NULL")
+		"""
+		ln -s $raw_vcf ${raw_vcf.simpleName}.smp.vcf.gz
+		vcftools --gzvcf $raw_vcf
+		cp .command.log ${raw_vcf.simpleName}.smp.log
+		"""
+	else
 	
-	"""
+		"""
+		vcftools --gzvcf $raw_vcf --remove $samples --recode -c | gzip > ${raw_vcf.simpleName}.smp.vcf.gz
+		cp .command.log ${raw_vcf.simpleName}.smp.log
+		"""
 	
 }
 
@@ -35,10 +43,18 @@ process filterGQ {
 	path "${samp_vcf.simpleName}.gq.vcf.gz", emit: vcf
 	path "${samp_vcf.simpleName}.gq.log"
 	
-	"""
-	vcftools --gzvcf $samp_vcf --minGQ ${params.minGQ} --recode -c | gzip > ${samp_vcf.simpleName}.gq.vcf.gz
-	cp .command.log ${samp_vcf.simpleName}.gq.log
-	"""
+	script:
+	if (params.minGQ == "NULL")
+		"""
+		ln -s $samp_vcf ${samp_vcf.simpleName}.gq.vcf.gz
+		vcftools --gzvcf $samp_vcf
+		cp .command.log ${samp_vcf.simpleName}.gq.log
+		"""
+	else
+		"""
+		vcftools --gzvcf $samp_vcf --minGQ ${params.minGQ} --recode -c | gzip > ${samp_vcf.simpleName}.gq.vcf.gz
+		cp .command.log ${samp_vcf.simpleName}.gq.log
+		"""
 
 }
 
@@ -77,14 +93,22 @@ process removeMissingIndv {
 	output:
 	path "${sng_vcf.simpleName}.indv.vcf.gz", emit: vcf
 	path "${sng_vcf.simpleName}.indv.log"
-	path "${sng_vcf.simpleName}.imiss"
+	path "${sng_vcf.simpleName}.imiss", optional: true
 	
-	"""
-	vcftools --gzvcf $sng_vcf --missing-indv --out ${sng_vcf.simpleName}
-	indvmiss.rb ${sng_vcf.simpleName}.imiss ${params.indvMissing} > missing_samples.txt
-	vcftools --gzvcf $sng_vcf --remove missing_samples.txt --recode -c | gzip > ${sng_vcf.simpleName}.indv.vcf.gz
-	cp .command.log ${sng_vcf.simpleName}.indv.log
-	"""
+	script:
+	if (params.indvMissing == "NULL")
+		"""
+		ln -s $sng_vcf ${sng_vcf.simpleName}.indv.vcf.gz
+		vcftools --gzvcf $sng_vcf
+		cp .command.log ${sng_vcf.simpleName}.indv.log
+		"""
+	else
+		"""
+		vcftools --gzvcf $sng_vcf --missing-indv --out ${sng_vcf.simpleName}
+		indvmiss.rb ${sng_vcf.simpleName}.imiss ${params.indvMissing} > missing_samples.txt
+		vcftools --gzvcf $sng_vcf --remove missing_samples.txt --recode -c | gzip > ${sng_vcf.simpleName}.indv.vcf.gz
+		cp .command.log ${sng_vcf.simpleName}.indv.log
+		"""
 
 }
 
@@ -101,11 +125,19 @@ process cullSNPs {
 	path "${indv_vcf.simpleName}.cull.vcf.gz", emit: vcf
 	path "${indv_vcf.simpleName}.cull.log"
 	
-	"""
-	Culling.py <(gunzip -c $indv_vcf) ${params.cull} | gzip > ${indv_vcf.simpleName}.cull.vcf.gz
-	vcftools --gzvcf ${indv_vcf.simpleName}.cull.vcf.gz --out ${indv_vcf.simpleName}.cull
-	cp .command.log ${indv_vcf.simpleName}.cull.log
-	"""
+	script:
+	if (params.cull == "NULL")
+		"""
+		ln -s $indv_vcf ${indv_vcf.simpleName}.cull.vcf.gz
+		vcftools --gzvcf $indv_vcf
+		cp .command.log ${indv_vcf.simpleName}.cull.log
+		"""
+	else
+		"""
+		Culling.py <(gunzip -c $indv_vcf) ${params.cull} | gzip > ${indv_vcf.simpleName}.cull.vcf.gz
+		vcftools --gzvcf ${indv_vcf.simpleName}.cull.vcf.gz --out ${indv_vcf.simpleName}.cull
+		cp .command.log ${indv_vcf.simpleName}.cull.log
+		"""
 	
 }
 
@@ -123,13 +155,21 @@ process filterMappability {
 	path "${cull_vcf.simpleName}.map.vcf.gz", emit: vcf
 	path "${cull_vcf.simpleName}.map.log"
 	
-	"""
-	bedtools sort -i $cull_vcf -header > cull_sort.vcf
-	bedtools sort -i $map_bed -header > map_sort.bed
-	bedtools intersect -a cull_sort.vcf -b map_sort.bed -v -header -sorted | gzip > ${cull_vcf.simpleName}.map.vcf.gz
-	vcftools --gzvcf ${cull_vcf.simpleName}.map.vcf.gz --out ${cull_vcf.simpleName}.map
-	cp .command.log ${cull_vcf.simpleName}.map.log
-	"""
+	script:
+	if (params.map_bed == "NULL")
+		"""
+		ln -s $cull_vcf ${cull_vcf.simpleName}.map.vcf.gz
+		vcftools --gzvcf $cull_vcf
+		cp .command.log ${cull_vcf.simpleName}.map.log
+		"""
+	else
+		"""
+		bedtools sort -i $cull_vcf -header > cull_sort.vcf
+		bedtools sort -i $map_bed -header > map_sort.bed
+		bedtools intersect -a cull_sort.vcf -b map_sort.bed -v -header -sorted | gzip > ${cull_vcf.simpleName}.map.vcf.gz
+		vcftools --gzvcf ${cull_vcf.simpleName}.map.vcf.gz --out ${cull_vcf.simpleName}.map
+		cp .command.log ${cull_vcf.simpleName}.map.log
+		"""
 	
 }
 
@@ -169,11 +209,19 @@ process filterChr {
 	path "${site_vcf.simpleName}.chr.vcf.gz", emit: vcf
 	path "${site_vcf.simpleName}.chr.log"
 	
-	"""
-	chr_line=`echo '--chr '`; chr_line+=`awk 1 ORS=' --chr ' ${chrs}`; chr_line=`echo \${chr_line% --chr }` # Make into a --chr command-list > ${site_vcf.simpleName}.site.log
-	vcftools --gzvcf $site_vcf --recode \$chr_line -c | gzip > ${site_vcf.simpleName}.chr.vcf.gz
-	cp .command.log ${site_vcf.simpleName}.chr.log
-	"""
+	script:
+	if (params.chr_file == "NULL")
+		"""
+		ln -s $site_vcf ${site_vcf.simpleName}.chr.vcf.gz
+		vcftools --gzvcf $site_vcf
+		cp .command.log ${site_vcf.simpleName}.chr.log
+		"""
+	else
+		"""
+		chr_line=`echo '--chr '`; chr_line+=`awk 1 ORS=' --chr ' ${chrs}`; chr_line=`echo \${chr_line% --chr }` # Make into a --chr command-list > ${site_vcf.simpleName}.site.log
+		vcftools --gzvcf $site_vcf --recode \$chr_line -c | gzip > ${site_vcf.simpleName}.chr.vcf.gz
+		cp .command.log ${site_vcf.simpleName}.chr.log
+		"""
 
 }
 
@@ -190,10 +238,18 @@ process thinSNPs {
 	path "${chr_vcf.simpleName}.thin.vcf.gz", emit: vcf
 	path "${chr_vcf.simpleName}.thin.log"
 	
-	"""
-	vcftools --gzvcf $chr_vcf --recode --thin ${params.thin} -c | gzip > ${chr_vcf.simpleName}.thin.vcf.gz
-	cp .command.log ${chr_vcf.simpleName}.thin.log
-	"""
+	script:
+	if (params.thin == "NULL")
+		"""
+		ln -s $chr_vcf ${chr_vcf.simpleName}.thin.vcf.gz
+		vcftools --gzvcf $chr_vcf
+		cp .command.log ${chr_vcf.simpleName}.thin.log
+		"""
+	else
+		"""
+		vcftools --gzvcf $chr_vcf --recode --thin ${params.thin} -c | gzip > ${chr_vcf.simpleName}.thin.vcf.gz
+		cp .command.log ${chr_vcf.simpleName}.thin.log
+		"""
 	
 }
 
@@ -208,17 +264,24 @@ process plinkLD {
 	
 	output:
 	path "${thin_vcf.simpleName}.pruned.vcf.gz", emit: vcf
-	path "${thin_vcf.simpleName}.ld.log"
-	path "${thin_vcf.simpleName}.pruned.fam"
-	path "${thin_vcf.simpleName}.pruned.bim"
-	path "${thin_vcf.simpleName}.pruned.bed"
+	path "${thin_vcf.simpleName}.pruned.log"
+	path "${thin_vcf.simpleName}.pruned.fam", optional: true
+	path "${thin_vcf.simpleName}.pruned.bim", optional: true
+	path "${thin_vcf.simpleName}.pruned.bed", optional: true
 	
+	script:
+	if (params.plinkLD_indep_pairwise == "NULL")
+		"""
+		ln -s $thin_vcf ${thin_vcf.simpleName}.pruned.vcf.gz
+		vcftools --gzvcf $thin_vcf
+		cp .command.log ${thin_vcf.simpleName}.pruned.log
+		"""
+	else
 	"""
 	plink2 --vcf $thin_vcf --maf ${params.minMAF} -indep-pairwise ${params.plinkLD_indep_pairwise} --bad-ld --allow-extra-chr --set-all-var-ids '@:#' --make-bed --out tmp
 	plink2 --bfile tmp --extract tmp.prune.in --make-bed --allow-extra-chr --export vcf-4.2 --out ${thin_vcf.simpleName}.pruned
 	gzip ${thin_vcf.simpleName}.pruned.vcf
-	cp .command.log ${thin_vcf.simpleName}.ld.log
-	
+	cp .command.log ${thin_vcf.simpleName}.pruned.log
 	"""
 	
 }
