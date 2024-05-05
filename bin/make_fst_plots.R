@@ -302,8 +302,8 @@ pdf(NULL)
 ggplot(result, aes(x = `Num.of.Markers`, y = Accuracy, shape = `Marker.Selection`, color = `Marker.Selection`)) +
 	geom_point(size = 3) +
 	labs(x = "Number of Markers", y = "Accuracy", shape = "Marker Selection") +
-	scale_shape_manual(name = "Marker Selection", values = c(21, 16), labels = c("Random", "Highest Fst")) + 
-	scale_colour_manual(name = "Marker Selection", values = c("blue","red"), labels = c("Random", "Highest Fst"))
+	scale_shape_manual(name = "Marker Selection", values = c(21, 16), labels = c("Highest Fst", "Random")) + 
+	scale_colour_manual(name = "Marker Selection", values = c("blue","red"), labels = c("Highest Fst","Random"))
 	theme_bw() +
 	theme(panel.background = element_rect(fill = "white"),text = element_text(size = 14), legend.title = element_text(size = 12), legend.text = element_text(size = 10))
 dev.off()	
