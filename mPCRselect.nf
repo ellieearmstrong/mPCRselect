@@ -349,7 +349,7 @@ process concatFinalSNPs {
 
 process makePrimers {
 
-	// Make primer sets from selected SNPs
+	// Make primer sets from selected SNPs using NGS-PrimerPlex
 	
 	publishDir "$params.outdir/14_mPCRPrimers", mode: "copy"
 	
