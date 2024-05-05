@@ -46,6 +46,7 @@ dfPop2 <- sample_n(dfPop2, resamples, replace = TRUE)
 common_columns_ab = intersect(names(dfPop1), names(dfPop2))
 dfPop1 <- dfPop1[, common_columns_ab]
 dfPop2 <- dfPop2[, common_columns_ab]
+totalsnps <- ncol(dfPop1) # Adjust maximum number of SNPs to those that can be used
 
 markers <- colnames(dfPop1)
 frequencies <- colSums(dfPop1) / (2 * resamples)
