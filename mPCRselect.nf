@@ -379,7 +379,7 @@ workflow {
 		splitPopulations(plinkLD.out.vcf, Channel.fromPath(params.populations).splitCsv(header:true).map { row -> tuple(row.Sample, row.Population) }.groupTuple(by: 1))
 		optimizePi(splitPopulations.out.vcf)
 		fstSNPs(plinkLD.out.vcf, params.populations)
-		fst_ch = splitPopulations.out.vcf.combine(splitPopulations.out.vcf).filter { it[0] != it[1]}.map { it -> it.sort() }.unique().combine(Channel.of(1..params.Fst_plot_repet))
+		fst_ch = splitPopulations.out.raw.combine(splitPopulations.out.raw).filter { it[0] != it[1]}.map { it -> it.sort() }.unique().combine(Channel.of(1..params.Fst_plot_repet))
 		makeFstPlots(fst_ch)
 		selected_snps_ch = optimizePi.out.vcf.mix(fstSNPs.out.vcf).collect() // Concatenate the SNP datasets for uniquing
 		finalSNPs(selected_snps_ch, plinkLD.out.vcf)
