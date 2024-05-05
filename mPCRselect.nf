@@ -334,15 +334,15 @@ process concatFinalSNPs {
 	path(pi_snps)
 	
 	output:
-	path "${fst_snps.simpleName).fst_pi.vcf.gz", emit: vcf
-	path "${fst_snps.simpleName).fst_pi.log"
+	path "${fst_snps.simpleName}.fst_pi.vcf.gz", emit: vcf
+	path "${fst_snps.simpleName}.fst_pi.log"
 	
 	"""
 	bcftools index $fst_snps
 	bcftools index $pi_snps
-	bcftools concat -ad all $fst_snps $pi_snps | gzip > ${fst_snps.simpleName).fst_pi.vcf.gz
-	vcftools --gzvcf ${fst_snps.simpleName).fst_pi.vcf.gz
-	cp .command.log ${fst_snps.simpleName).fst_pi.log
+	bcftools concat -ad all $fst_snps $pi_snps | gzip > ${fst_snps.simpleName}.fst_pi.vcf.gz
+	vcftools --gzvcf ${fst_snps.simpleName}.fst_pi.vcf.gz
+	cp .command.log ${fst_snps.simpleName}.fst_pi.log
 	"""
 
 }
