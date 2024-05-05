@@ -6,6 +6,7 @@ library(tidyverse)
 library(caret)
 library(ggplot2)
 
+# Set up arguments
 fst_args = commandArgs(trailingOnly=TRUE) # Get input arguments
 pop_file1 <- fst_args[1] # Raw file of genotypes for population 1
 pop_file2 <- fst_args[2] # Raw file of genotypes for population 2
@@ -15,6 +16,17 @@ resamples <- as.numeric(fst_args[5]) # Number of individuals to resample data to
 requested_snps <- as.numeric(fst_args[6]) # Maximum number of SNPs to evaluate
 snp_interval <- as.numeric(fst_args[7]) # Interval at which to plot SNP accuracy
 
+# Read data
+dfPop1 = read_delim(pop_file1, delim = "\t") 
+dfPop2 = read_delim(pop_file2, delim = "\t")
+totalind1 <- nrow(dfPop1) - 1
+totalind2 <- nrow(dfPop2) - 1
+dfPop1 <- dfPop1[1:totalind1, 7:ncol(dfPop1)]
+dfPop2 <- dfPop2[1:totalind2, 7:ncol(dfPop2)]
+dfPop1 <- dfPop1[, colSums(is.na(dfPop1)) == 0]
+dfPop2 <- dfPop2[, colSums(is.na(dfPop2)) == 0]
+
+# Set up output graphs
 num_individuals1 <- rep(totalind1, each = 2 * (requested_snps/snp_interval))
 num_individuals2 <- rep(totalind2, each = 2 * (requested_snps/snp_interval))
 nmarks <- c()
@@ -25,15 +37,6 @@ num_markers <- rep(nmarks, times = 2)
 type <- rep(c("Highest_Fst", "Random"), each = (requested_snps/snp_interval))
 accuracy <- rep(NA, 2 * (requested_snps/snp_interval))  
 result <- data.frame(`Num of Individuals Pop1` = num_individuals1,`Num of Individuals Pop2` = num_individuals2, `Num of Markers` = num_markers,`Marker Selection` = type, `Accuracy` = accuracy)
-
-dfPop1 = read_delim(pop_file1, delim = "\t") 
-dfPop2 = read_delim(pop_file2, delim = "\t")
-totalind1 <- nrow(dfPop1) - 1
-totalind2 <- nrow(dfPop2) - 1
-dfPop1 <- dfPop1[1:totalind1, 7:ncol(dfPop1)]
-dfPop2 <- dfPop2[1:totalind2, 7:ncol(dfPop2)]
-dfPop1 <- dfPop1[, colSums(is.na(dfPop1)) == 0]
-dfPop2 <- dfPop2[, colSums(is.na(dfPop2)) == 0]
 
 # Resample populations to account for varying sample sizes
 dfPop1 <- sample_n(dfPop1, resamples, replace = TRUE)
