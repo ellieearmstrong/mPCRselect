@@ -1,7 +1,7 @@
 # CHANGELOG  
 
 ### Versions 0.3.0  
-Removed removeSamples process  
+Added NULL option bypass to all filter processes  
 Removed PCA steps and associated scripts  
 Added PLINK LD thinning  
 Subspecies now called populations  
