@@ -7,6 +7,7 @@ Added PLINK LD thinning
 Subspecies now called populations  
 Removed '.recode' from VCF names  
 splitPopulations converts to PLINK2 raw format  
+get_best_snps uses PLINK2 SNP ID  
 
 
 ### Version 0.2.0  
