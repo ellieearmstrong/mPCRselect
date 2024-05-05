@@ -245,7 +245,7 @@ process optimizePi {
 	"""
 	vcftools --gzvcf $pop_vcf --site-pi --out ${pop_vcf.simpleName}
 	get_pi_sites.rb ${pop_vcf.simpleName}.sites.pi ${params.minPi} ${params.maxPiSNPs} ${params.maxPiPC} > pi_sites.txt
-	vcftools --gzvcf $pop_vcf --positions pi_sites.txt --recode -c | gzip > ${pop_vcf.simpleName}.pi.vcf.gz
+	vcftools --gzvcf $pop_vcf --positions pi_sites.txt --recode -c | bgzip > ${pop_vcf.simpleName}.pi.vcf.gz
 	cp .command.log ${pop_vcf.simpleName}.pi.log
 	"""
 
@@ -317,7 +317,7 @@ process fstFinalSNPs {
 	"""
 	input=`echo $filelist`
 	get_best_snps.rb ${params.maxFstSNPs} \$input > best_snps.txt
-	vcftools --gzvcf $thin_vcf --positions best_snps.txt --recode -c | gzip > ${thin_vcf.simpleName}.fin.vcf.gz
+	vcftools --gzvcf $thin_vcf --positions best_snps.txt --recode -c | bgzip > ${thin_vcf.simpleName}.fin.vcf.gz
 	cp .command.log ${thin_vcf.simpleName}.fin.log
 	"""
 	
@@ -338,6 +338,11 @@ process concatFinalSNPs {
 	path "${fst_snps.simpleName).fst_pi.log"
 	
 	"""
+	bcftools index $fst_snps
+	bcftools index $pi_snps
+	bcftools concat -ad all $fst_snps $pi_snps | gzip > ${fst_snps.simpleName).fst_pi.vcf.gz
+	vcftools --gzvcf ${fst_snps.simpleName).fst_pi.vcf.gz
+	cp .command.log ${fst_snps.simpleName).fst_pi.log
 	"""
 
 }
