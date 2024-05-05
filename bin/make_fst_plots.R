@@ -7,16 +7,13 @@ library(caret)
 library(ggplot2)
 
 fst_args = commandArgs(trailingOnly=TRUE) # Get input arguments
-totalind1 <- as.numeric(fst_args[1]) # Total number of individuals in population 1
-totalind2 <- as.numeric(fst_args[2]) # Total number of individuals in population 2
-totalsnps <- as.numeric(fst_args[3]) # Total number of SNPs in dataset. May need to split in two variables.
-pop_file1 <- fst_args[4] # Raw file of genotypes for population 1
-pop_file2 <- fst_args[5] # Raw file of genotypes for population 2
-outstem <- fst_args[6] # Output file stem
-dcontrol <- as.numeric(fst_args[7]) # Number of control replicates
-resamples <- as.numeric(fst_args[8]) # Number of individuals to resample data to
-requested_snps <- as.numeric(fst_args[9]) # Maximum number of SNPs to evaluate
-snp_interval <- as.numeric(fst_args[10]) # Interval at which to plot SNP accuracy
+pop_file1 <- fst_args[1] # Raw file of genotypes for population 1
+pop_file2 <- fst_args[2] # Raw file of genotypes for population 2
+outstem <- fst_args[3] # Output file stem
+dcontrol <- as.numeric(fst_args[4]) # Number of control replicates
+resamples <- as.numeric(fst_args[5]) # Number of individuals to resample data to
+requested_snps <- as.numeric(fst_args[6]) # Maximum number of SNPs to evaluate
+snp_interval <- as.numeric(fst_args[7]) # Interval at which to plot SNP accuracy
 
 if (requested_snps > totalsnps) {requested_snps <- totalsnps} # Fix bad values
 if (snp_interval > requested_snps) {snp_interval <- requested_snps} # Fix bad values
@@ -34,8 +31,10 @@ result <- data.frame(`Num of Individuals Pop1` = num_individuals1,`Num of Indivi
 
 dfPop1 = read_delim(pop_file1, delim = "\t") 
 dfPop2 = read_delim(pop_file2, delim = "\t")
-dfPop1 <- dfPop1[1:totalind1, 7:(totalsnps+6)]
-dfPop2 <- dfPop2[1:totalind2, 7:(totalsnps+6)]
+totalind1 <- nrow(dfPop1) - 1
+totalind2 <- nrow(dfPop2) - 1
+dfPop1 <- dfPop1[1:totalind1, 7:ncol(dfPop1)]
+dfPop2 <- dfPop2[1:totalind2, 7:ncol(dfPop2)]
 dfPop1 <- dfPop1[, colSums(is.na(dfPop1)) == 0]
 dfPop2 <- dfPop2[, colSums(is.na(dfPop2)) == 0]
 
