@@ -43,14 +43,17 @@ dfPop2 <- dfPop2[, colSums(is.na(dfPop2)) == 0]
 dfPop1 <- sample_n(dfPop1, resamples, replace = TRUE)
 dfPop2 <- sample_n(dfPop2, resamples, replace = TRUE)
 
+common_columns_ab = intersect(names(dfPop1), names(dfPop2))
+dfPop1 <- dfPop1[, common_columns_ab]
+dfPop2 <- dfPop2[, common_columns_ab]
+
 markers <- colnames(dfPop1)
-markers2 <- colnames(dfPop2)
 frequencies <- colSums(dfPop1) / (2 * resamples)
 frequencies <- as.numeric(frequencies)
 freq_Pop1 <- data.frame(markers, frequencies)
 frequencies2 <- colSums(dfPop2) / (2 *  resamples)
 frequencies2 <- as.numeric(frequencies2)
-freq_Pop2 <- data.frame(markers2, frequencies2)
+freq_Pop2 <- data.frame(markers, frequencies2)
 
 Fst_list <- vector("numeric", length = totalsnps) 
 for(i in 1:totalsnps){
