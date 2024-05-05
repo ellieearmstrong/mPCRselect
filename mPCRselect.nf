@@ -293,7 +293,7 @@ process makeFstPlots {
 	#!/usr/bin/env bash
 	let totalind1=`wc -l $pop1_raw | cut -f2 -w`-1
 	let totalind2=`wc -l $pop2_raw | cut -f2 -w`-1
-	let totalsnps=`head -n1 $pop1_raw | grep -o \"\\t\" | wc -l`-6
+	let totalsnps=`head -n1 $pop1_raw | grep -o \"\\t\" | wc -l| cut -f2 -w`-6
 	outstem=${pop1_raw.simpleName}_${pop2_raw.simpleName}_rep${rep}
 	make_fst_plots.R \$totalind1 \$totalind2 \$totalsnps $pop1_raw $pop2_raw \$outstem ${params.Dcontrol} ${params.FstIndResamples} ${params.MaxFstEval} ${params.FstSNPInterval}
 	"""
