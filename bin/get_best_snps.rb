@@ -29,7 +29,6 @@ for infile in ARGV[1..-1]
 				else
 					site = line_arr[2].split("_")[0].gsub(":","\t") # Use PLINK snp ID and remove SNP call for VCFs
 				end
-				puts site
 				if @snps.keys.include?(site)
 					@snps[site]+=1
 				else
