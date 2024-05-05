@@ -14,19 +14,10 @@ process removeSamples {
 	path "${raw_vcf.simpleName}.smp.vcf.gz", emit: vcf
 	path "${raw_vcf.simpleName}.smp.log"
 	
-	script:
-	if (params.samples == "NULL")
-		"""
-		ln -s $raw_vcf ${raw_vcf.simpleName}.smp.vcf.gz
-		vcftools --gzvcf $raw_vcf
-		cp .command.log ${raw_vcf.simpleName}.smp.log
-		"""
-	else
-	
-		"""
-		vcftools --gzvcf $raw_vcf --remove $samples --recode -c | gzip > ${raw_vcf.simpleName}.smp.vcf.gz
-		cp .command.log ${raw_vcf.simpleName}.smp.log
-		"""
+	"""
+	vcftools --gzvcf $raw_vcf --remove $samples --recode -c | gzip > ${raw_vcf.simpleName}.smp.vcf.gz
+	cp .command.log ${raw_vcf.simpleName}.smp.log
+	"""
 	
 }
 
@@ -155,21 +146,13 @@ process filterMappability {
 	path "${cull_vcf.simpleName}.map.vcf.gz", emit: vcf
 	path "${cull_vcf.simpleName}.map.log"
 	
-	script:
-	if (params.map_bed == "NULL")
-		"""
-		ln -s $cull_vcf ${cull_vcf.simpleName}.map.vcf.gz
-		vcftools --gzvcf $cull_vcf
-		cp .command.log ${cull_vcf.simpleName}.map.log
-		"""
-	else
-		"""
-		bedtools sort -i $cull_vcf -header > cull_sort.vcf
-		bedtools sort -i $map_bed -header > map_sort.bed
-		bedtools intersect -a cull_sort.vcf -b map_sort.bed -v -header -sorted | gzip > ${cull_vcf.simpleName}.map.vcf.gz
-		vcftools --gzvcf ${cull_vcf.simpleName}.map.vcf.gz --out ${cull_vcf.simpleName}.map
-		cp .command.log ${cull_vcf.simpleName}.map.log
-		"""
+	"""
+	bedtools sort -i $cull_vcf -header > cull_sort.vcf
+	bedtools sort -i $map_bed -header > map_sort.bed
+	bedtools intersect -a cull_sort.vcf -b map_sort.bed -v -header -sorted | gzip > ${cull_vcf.simpleName}.map.vcf.gz
+	vcftools --gzvcf ${cull_vcf.simpleName}.map.vcf.gz --out ${cull_vcf.simpleName}.map
+	cp .command.log ${cull_vcf.simpleName}.map.log
+	"""
 	
 }
 
@@ -209,19 +192,11 @@ process filterChr {
 	path "${site_vcf.simpleName}.chr.vcf.gz", emit: vcf
 	path "${site_vcf.simpleName}.chr.log"
 	
-	script:
-	if (params.chr_file == "NULL")
-		"""
-		ln -s $site_vcf ${site_vcf.simpleName}.chr.vcf.gz
-		vcftools --gzvcf $site_vcf
-		cp .command.log ${site_vcf.simpleName}.chr.log
-		"""
-	else
-		"""
-		chr_line=`echo '--chr '`; chr_line+=`awk 1 ORS=' --chr ' ${chrs}`; chr_line=`echo \${chr_line% --chr }` # Make into a --chr command-list > ${site_vcf.simpleName}.site.log
-		vcftools --gzvcf $site_vcf --recode \$chr_line -c | gzip > ${site_vcf.simpleName}.chr.vcf.gz
-		cp .command.log ${site_vcf.simpleName}.chr.log
-		"""
+	"""
+	chr_line=`echo '--chr '`; chr_line+=`awk 1 ORS=' --chr ' ${chrs}`; chr_line=`echo \${chr_line% --chr }` # Make into a --chr command-list > ${site_vcf.simpleName}.site.log
+	vcftools --gzvcf $site_vcf --recode \$chr_line -c | gzip > ${site_vcf.simpleName}.chr.vcf.gz
+	cp .command.log ${site_vcf.simpleName}.chr.log
+	"""
 
 }
 
@@ -474,15 +449,27 @@ process makeBaits {
 
 workflow {
 	main:
-		removeSamples(params.vcf, params.samples)
-		filterGQ(removeSamples.out.vcf)
+		if (params.samples == 'NULL') {
+			filterGQ(params.vcf)
+		} else {
+			removeSamples(params.vcf, params.samples)
+			filterGQ(removeSamples.out.vcf)
+		}
 		removeSingletons(filterGQ.out.vcf)
 		removeMissingIndv(removeSingletons.out.vcf)
 		cullSNPs(removeMissingIndv.out.vcf)
-		filterMappability(cullSNPs.out.vcf, params.map_bed)
-		filterSites(filterMappability.out.vcf)
-		filterChr(filterSites.out.vcf, params.chr_file)
-		thinSNPs(filterChr.out.vcf)
+		if (params.map_bed == "NULL") {
+			filterSites(cullSNPs.out.vcf)
+		} else {
+			filterMappability(cullSNPs.out.vcf, params.map_bed)
+			filterSites(filterMappability.out.vcf)
+		}
+		if (params.chr_file == "NULL") {
+			thinSNPs(filterSites.out.vcf)
+		} else {
+			filterChr(filterSites.out.vcf, params.chr_file)
+			thinSNPs(filterChr.out.vcf)
+		}
 		plinkLD(thinSNPs.out.vcf)
 		splitPopulations(plinkLD.out.vcf, Channel.fromPath(params.populations).splitCsv(header:true).map { row -> tuple(row.Sample, row.Population) }.groupTuple(by: 1))
 		optimizePi(splitPopulations.out.vcf)
