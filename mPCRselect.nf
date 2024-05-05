@@ -288,6 +288,7 @@ process makeFstPlots {
 	
 	output:
 	path "${pop1_raw.simpleName}_${pop2_raw.simpleName}_rep${rep}*"
+	path "${pop1_raw.simpleName}_${pop2_raw.simpleName}_rep${rep}.highFst.csv", emit: fst_csv
 	
 	"""
 	#!/usr/bin/env bash
@@ -297,29 +298,48 @@ process makeFstPlots {
 
 }
 
-process finalSNPs {
+process fstFinalSNPs {
 
-	// Merge datasets and find most observed SNP selections
+	// Merge datasets and find most observed Fst SNP selections
 	
-	publishDir "$params.outdir/14_FinalSNPs", mode: 'copy'
+	publishDir "$params.outdir/14_FstFinalSNPs", mode: 'copy'
 	
 	input:
 	path(sel_snps)
 	path(thin_vcf)
 	
 	output:
-	path "${thin_vcf.simpleName}.fin.vcf.gz", emit: vcf
-	path "${thin_vcf.simpleName}.fin.log"
+	path "${thin_vcf.simpleName}.finFst.vcf.gz", emit: vcf
+	path "${thin_vcf.simpleName}.finFst.log"
 	
 	script:
 	filelist = sel_snps.join("\t")
 	"""
 	input=`echo $filelist`
-	get_best_snps.rb ${params.maxSNPs} \$input > best_snps.txt
+	get_best_snps.rb ${params.maxFstSNPs} \$input > best_snps.txt
 	vcftools --gzvcf $thin_vcf --positions best_snps.txt --recode -c | gzip > ${thin_vcf.simpleName}.fin.vcf.gz
 	cp .command.log ${thin_vcf.simpleName}.fin.log
 	"""
 	
+}
+
+process concatFinalSNPs {
+
+	// Concatenate Fst and Pi SNPs into a single dataset
+	
+	publishDir "$params.outdir/15_Fst_Pi_SNPs", mode: 'copy'
+	
+	input:
+	path(fst_snps)
+	path(pi_snps)
+	
+	output:
+	path "${fst_snps.simpleName).fst_pi.vcf.gz", emit: vcf
+	path "${fst_snps.simpleName).fst_pi.log"
+	
+	"""
+	"""
+
 }
 
 process makePrimers {
@@ -378,9 +398,9 @@ workflow {
 		fstSNPs(plinkLD.out.vcf, params.populations)
 		fst_ch = splitPopulations.out.raw.combine(splitPopulations.out.raw).filter { it[0] != it[1]}.map { it -> it.sort() }.unique().combine(Channel.of(1..params.Fst_plot_repet))
 		makeFstPlots(fst_ch)
-		selected_snps_ch = optimizePi.out.vcf.mix(fstSNPs.out.vcf).collect() // Concatenate the SNP datasets for uniquing
-		finalSNPs(selected_snps_ch, plinkLD.out.vcf)
-		if (params.makePrimers == 1) { makePrimers(tuple finalSNPs.out.vcf, channel.fromPath(params.refseq)) }
-		if (params.makeBaits == 1) { makeBaits(tuple finalSNPs.out.vcf, channel.fromPath(params.refseq)) }
+		fst_selected_snps_ch = makeFstPlots.out.fst_csv.mix(fstSNPs.out.vcf).collect() // Concatenate the Fst SNP datasets for uniquing
+		fstFinalSNPs(fst_selected_snps_ch, plinkLD.out.vcf) | concatFinalSNPs
+		if (params.makePrimers == 1) { makePrimers(tuple concatFinalSNPs.out.vcf, channel.fromPath(params.refseq)) }
+		if (params.makeBaits == 1) { makeBaits(tuple concatFinalSNPs.out.vcf, channel.fromPath(params.refseq)) }
 		
 }

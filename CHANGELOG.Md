@@ -8,7 +8,8 @@ Subspecies now called populations
 Removed '.recode' from VCF names  
 splitPopulations converts to PLINK2 raw format  
 get_best_snps uses PLINK2 SNP ID  
-
+finalSNPs now FstFinalSNPs as Pi SNPs are chosen separately  
+concatFinalSNPs now merges Fst and Pi SNPs  
 
 ### Version 0.2.0  
 Added dummy process to generate mPCR primers  
