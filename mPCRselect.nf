@@ -507,7 +507,7 @@ workflow {
 		fstFinalSNPs(fst_selected_snps_ch, plinkLD.out.vcf)
 		piFinalSNPs(optimizePi.out.vcf.collect(), plinkLD.out.vcf)
 		concatFinalSNPs(fstFinalSNPs.out.vcf, piFinalSNPs.out.vcf)
-		if (params.makePrimers == 1) { makePrimers(tuple concatFinalSNPs.out.vcf, channel.fromPath(params.refseq)) }
-		if (params.makeBaits == 1) { makeBaits(tuple concatFinalSNPs.out.vcf, channel.fromPath(params.refseq)) }
+		if (params.makePrimers == 1) { makePrimers(tuple concatFinalSNPs.out.vcf, params.refseq) }
+		if (params.makeBaits == 1) { makeBaits(tuple concatFinalSNPs.out.vcf, params.refseq) }
 		
 }
