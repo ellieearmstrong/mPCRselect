@@ -503,8 +503,8 @@ process plinkPCA {
 	path(fst_pi_vcf)
 	
 	output:
-	path "*eigenvec*"
-	path "plink2.pca.log"
+	path '*eigenvec*'
+	path 'plink2.pca.log'
 	
 	"""
 	#!/usr/bin/env bash
