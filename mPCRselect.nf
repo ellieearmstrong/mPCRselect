@@ -465,7 +465,7 @@ process makeBaits {
 	output:
 	path "${fin_snps.simpleName}*"
 	
-	when
+	when:
 	params.makeBaits == 1
 	
 	"""
