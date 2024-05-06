@@ -510,7 +510,11 @@ process plinkPCA {
 	#!/usr/bin/env bash
 	gunzip $fst_vcf; gzip $fst_vcf
 	gunzip $pi_vcf; gzip $pi_vcf
-
+	for vcf in *vcf.gz; do
+		vcftools --gzvcf \$vcf --min-alleles 2 --max-alleles 2 -c | gzip > \${vcf%.vcf.gz}.biallelic.vcf.gz
+		plink2 --vcf \${vcf%.vcf.gz}.biallelic.vcf.gz --pca biallelic-var-wts --allow-extra-chr --chr-set ${params.haploidN} --bad-freqs --out \${vcf%.vcf.gz}.biallelic
+	done
+	cp .command.log plink2.pca.log
 	"""
 
 }
