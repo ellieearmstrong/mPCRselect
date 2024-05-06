@@ -377,8 +377,8 @@ process fstFinalSNPs {
 	"""
 	input=`echo $filelist`
 	get_best_snps.rb ${params.maxFstSNPs} \$input > best_snps.txt
-	vcftools --gzvcf $thin_vcf --positions best_snps.txt --recode -c | bgzip > ${thin_vcf.simpleName}.fin.vcf.gz
-	cp .command.log ${thin_vcf.simpleName}.fin.log
+	vcftools --gzvcf $thin_vcf --positions best_snps.txt --recode -c | bgzip > ${thin_vcf.simpleName}.finFst.vcf.gz
+	cp .command.log ${thin_vcf.simpleName}.finFst.log
 	"""
 	
 }
