@@ -496,11 +496,11 @@ process plinkPCA {
 	publishDir "$params.outdir/20_PCAs", mode: 'copy'
 	
 	input:
-	path original_vcf
-	path filtered_vcf
-	path fst_vcf
-	path pi_vcf
-	path fst_pi_vcf
+	path(original_vcf)
+	path(filtered_vcf)
+	path(fst_vcf)
+	path(pi_vcf)
+	path(fst_pi_vcf)
 	
 	output:
 	path "*eigenvec*"
