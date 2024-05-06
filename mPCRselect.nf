@@ -439,7 +439,8 @@ process makePrimers {
 	publishDir "$params.outdir/17_mPCRPrimers", mode: "copy"
 	
 	input:
-	tuple path(fin_snps), path(refseq)
+	path(fin_snps)
+	path(refseq)
 	
 	output:
 	path "${fin_snps.simpleName}.npp.txt"
@@ -458,7 +459,8 @@ process makeBaits {
 	publishDir "$params.outdir/18_Baits", mode: "copy"
 	
 	input:
-	tuple path(fin_snps), path(refseq)
+	path(fin_snps)
+	path(refseq)
 	
 	output:
 	path "${fin_snps.simpleName}*"
@@ -502,7 +504,7 @@ workflow {
 		fstFinalSNPs(fst_selected_snps_ch, plinkLD.out.vcf)
 		piFinalSNPs(optimizePi.out.vcf.collect(), plinkLD.out.vcf)
 		concatFinalSNPs(fstFinalSNPs.out.vcf, piFinalSNPs.out.vcf)
-		if (params.makePrimers == 1) { makePrimers(tuple concatFinalSNPs.out.vcf, params.refseq) }
-		if (params.makeBaits == 1) { makeBaits(tuple concatFinalSNPs.out.vcf, params.refseq) }
+		if (params.makePrimers == 1) { makePrimers(concatFinalSNPs.out.vcf, params.refseq) }
+		if (params.makeBaits == 1) { makeBaits(concatFinalSNPs.out.vcf, params.refseq) }
 		
 }
