@@ -442,11 +442,13 @@ process makePrimers {
 	tuple path(fin_snps), path(refseq)
 	
 	output:
+	path "${fin_snps.simpleName}.npp.txt"
 	
 	when:
 	params.makePrimers == 1
 	
 	"""
+	vcf_2_ngsprimerplex.rb $fin_snps > ${fin_snps.simpleName}.npp.txt
 	"""
 
 }
