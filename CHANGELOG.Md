@@ -10,6 +10,7 @@ splitPopulations converts to PLINK2 raw format
 get_best_snps uses PLINK2 SNP ID  
 finalSNPs now fstFinalSNPs and piFinalSNPs as Fst and Pi SNPs are chosen separately  
 concatFinalSNPs now merges Fst and Pi SNPs  
+vcf_2_ngsprimperplex.rb script converts final VCF to NGS-PrimerPlex format  
 
 ### Version 0.2.0  
 Added dummy process to generate mPCR primers  
