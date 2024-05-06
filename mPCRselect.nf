@@ -383,11 +383,36 @@ process fstFinalSNPs {
 	
 }
 
+process piFinalSNPs {
+
+	// Merge datasets and find most observed Pi SNP selections
+	
+	publishDir "$params.outdir/16_PiFinalSNPs", mode: 'copy'
+	
+	input:
+	path(sel_snps)
+	path(thin_vcf)
+	
+	output:
+	path "${thin_vcf.simpleName}.finPi.vcf.gz", emit: vcf
+	path "${thin_vcf.simpleName}.finPi.log"
+	
+	script:
+	filelist = sel_snps.join("\t")
+	"""
+	input=`echo $filelist`
+	get_best_snps.rb ${params.maxFstSNPs} \$input > best_snps.txt
+	vcftools --gzvcf $thin_vcf --positions best_snps.txt --recode -c | bgzip > ${thin_vcf.simpleName}.finPi.vcf.gz
+	cp .command.log ${thin_vcf.simpleName}.finPi.log
+	"""
+	
+}
+
 process concatFinalSNPs {
 
 	// Concatenate Fst and Pi SNPs into a single dataset
 	
-	publishDir "$params.outdir/16_Fst_Pi_SNPs", mode: 'copy'
+	publishDir "$params.outdir/17_Fst_Pi_SNPs", mode: 'copy'
 	
 	input:
 	path(fst_snps)
@@ -478,7 +503,8 @@ workflow {
 		makeFstPlots(fst_ch)
 		fst_selected_snps_ch = makeFstPlots.out.fst_csv.mix(fstSNPs.out.vcf).collect() // Concatenate the Fst SNP datasets for uniquing
 		fstFinalSNPs(fst_selected_snps_ch, plinkLD.out.vcf)
-		concatFinalSNPs(fstFinalSNPs.out.vcf, optimizePi.out.vcf)
+		piFinalSNPs(optimizePi.out.vcf.collect())
+		concatFinalSNPs(fstFinalSNPs.out.vcf, piFinalSNPs.out.vcf)
 		if (params.makePrimers == 1) { makePrimers(tuple concatFinalSNPs.out.vcf, channel.fromPath(params.refseq)) }
 		if (params.makeBaits == 1) { makeBaits(tuple concatFinalSNPs.out.vcf, channel.fromPath(params.refseq)) }
 		
