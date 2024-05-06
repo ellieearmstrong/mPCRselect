@@ -463,7 +463,7 @@ process makeBaits {
 	tuple path(fin_snps), path(refseq)
 	
 	output:
-	path ${fin_snps.simpleName}*
+	path "${fin_snps.simpleName}*"
 	
 	when
 	params.makeBaits == 1
