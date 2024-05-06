@@ -432,6 +432,22 @@ process concatFinalSNPs {
 
 }
 
+process indexRef {
+
+	// Index reference sequence for NGS-PrimerPlex
+	
+	input:
+	path(refseq)
+	
+	output:
+	path "$refseq.*"
+	
+	"""
+	bwa index $refseq
+	"""
+
+}
+
 process makePrimers {
 
 	// Make primer sets from selected SNPs using NGS-PrimerPlex
@@ -441,6 +457,7 @@ process makePrimers {
 	input:
 	path(fin_snps)
 	path(refseq)
+	path('*')
 	
 	output:
 	path "${fin_snps.simpleName}.npp.txt"
@@ -448,7 +465,6 @@ process makePrimers {
 	
 	"""
 	vcf_2_ngsprimerplex.rb $fin_snps > ${fin_snps.simpleName}.npp.txt
-	bwa index $refseq
 	NGS_primerplex.py -regions ${fin_snps.simpleName}.npp.txt -ref $refseq -ad1 ${params.primerSeq1} -ad2 ${params.primerSeq2} -run ${fin_snps.simpleName} ${params.NPP_params}
 	"""
 
@@ -527,7 +543,10 @@ workflow {
 		fstFinalSNPs(fst_selected_snps_ch, plinkLD.out.vcf)
 		piFinalSNPs(optimizePi.out.vcf.collect(), plinkLD.out.vcf)
 		concatFinalSNPs(fstFinalSNPs.out.vcf, piFinalSNPs.out.vcf)
-		if (params.makePrimers == 1) { makePrimers(concatFinalSNPs.out.vcf, params.refseq) }
+		if (params.makePrimers == 1) {
+			indexRef(params.refseq)
+			makePrimers(concatFinalSNPs.out.vcf, params.refseq, indexRef.out) 
+		}
 		if (params.makeBaits == 1) { makeBaits(concatFinalSNPs.out.vcf, params.refseq) }
 		
 }
