@@ -489,26 +489,35 @@ process makeBaits {
 
 }
 
-/* process plinkPCA {
+process plinkPCA {
 
 	// Verify that chosen SNPs replicate structure of data using PCA
 	
 	publishDir "$params.outdir/20_PCAs", mode: 'copy'
 	
 	input:
-	path thin_vcf
+	path original_vcf
+	path filtered_vcf
+	path fst_vcf
+	path pi_vcf
+	path fst_pi_vcf
 	
 	output:
+	path "*eigenvec*"
+	path "plink2.pca.log"
 	
 	"""
-	vcftools --vcf remapped.vcf --min-alleles 2 --max-alleles 2 --plink --out ${thin_vcf.simpleName}
-	plink2 --pedmap ${thin_vcf.simpleName} --pca biallelic-var-wts --allow-extra-chr --chr-set ${params.haploidN} --bad-freqs
-	get_PCA_snps.rb plink2.eigenvec.var chr_maps.csv ${params.maxPCASNPs} ${params.maxPCAPC} > pca_sites.txt
-	vcftools --gzvcf $thin_vcf --positions pca_sites.txt --recode -c | gzip > ${thin_vcf.simpleName}.pca.recode.vcf.gz
-	cp .command.log ${thin_vcf.simpleName}.pca.log
+	#!/usr/bin/env bash
+	gunzip fst_vcf; gzip fst_vcf
+	gunzip pi_vcf; gzip pi_vcf
+	for vcf in *vcf.gz; do
+		vcftools --gzvcf \$vcf --min-alleles 2 --max-alleles 2 -c | gzip > \$\{vcf%.vcf.gz\}.biallelic.vcf.gz
+		plink2 --vcf \$\{vcf%.vcf.gz\}.biallelic.vcf.gz --pca biallelic-var-wts --allow-extra-chr --chr-set ${params.haploidN} --bad-freqs --out \$\{vcf%.vcf.gz\}.biallelic
+	done
+	cp .command.log plink2.pca.log
 	"""
 
-} */
+}
 
 workflow {
 	main:
@@ -548,5 +557,9 @@ workflow {
 			makePrimers(concatFinalSNPs.out.vcf, params.refseq, indexRef.out) 
 		}
 		if (params.makeBaits == 1) { makeBaits(concatFinalSNPs.out.vcf, params.refseq) }
-		
+		if (params.samples == 'NULL') {
+			plinkPCA(params.vcf, thinSNPs.out.vcf, fstFinalSNPs.out.vcf, piFinalSNPs.out.vcf, concatFinalSNPs.out.vcf)
+		} else {
+			plinkPCA(removeSamples.out.vcf, thinSNPs.out.vcf, fstFinalSNPs.out.vcf, piFinalSNPs.out.vcf, concatFinalSNPs.out.vcf)
+		}
 }
