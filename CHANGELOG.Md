@@ -2,7 +2,8 @@
 
 ### Versions 0.3.0  
 Added NULL option bypass to all filter processes  
-Removed PCA steps and associated scripts  
+plinkPCA now used for post-hoc quality checks rather than SNP selection  
+Removed PCA-associated scripts  
 Added PLINK LD thinning  
 Subspecies now called populations  
 Removed '.recode' from VCF names  

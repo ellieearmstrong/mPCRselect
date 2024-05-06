@@ -253,8 +253,8 @@ process plinkLD {
 		"""
 	else
 	"""
-	plink2 --vcf $thin_vcf --maf ${params.minMAF} -indep-pairwise ${params.plinkLD_indep_pairwise} --bad-ld --allow-extra-chr --set-all-var-ids '@:#' --make-bed --out tmp
-	plink2 --bfile tmp --extract tmp.prune.in --make-bed --allow-extra-chr --export vcf-4.2 --out ${thin_vcf.simpleName}.pruned
+	plink2 --vcf $thin_vcf --maf ${params.minMAF} -indep-pairwise ${params.plinkLD_indep_pairwise} --bad-ld --allow-extra-chr --chr-set ${params.haploidN} --set-all-var-ids '@:#' --make-bed --out tmp
+	plink2 --bfile tmp --extract tmp.prune.in --make-bed --allow-extra-chr --chr-set ${params.haploidN} --export vcf-4.2 --out ${thin_vcf.simpleName}.pruned
 	gzip ${thin_vcf.simpleName}.pruned.vcf
 	cp .command.log ${thin_vcf.simpleName}.pruned.log
 	"""
@@ -283,7 +283,7 @@ process splitPopulations {
 	}
 	"""
 	vcftools --gzvcf $thin_vcf --recode${samplelist} -c | gzip > ${thin_vcf.simpleName}_${population}.vcf.gz
-	plink2 --vcf ${thin_vcf.simpleName}_${population}.vcf.gz --allow-extra-chr --export A --out ${thin_vcf.simpleName}_${population}
+	plink2 --vcf ${thin_vcf.simpleName}_${population}.vcf.gz --allow-extra-chr --chr-set ${params.haploidN} --export A --out ${thin_vcf.simpleName}_${population}
 	cp .command.log ${thin_vcf.simpleName}_${population}.log
 	"""
 
@@ -436,7 +436,7 @@ process makePrimers {
 
 	// Make primer sets from selected SNPs using NGS-PrimerPlex
 	
-	publishDir "$params.outdir/17_mPCRPrimers", mode: "copy"
+	publishDir "$params.outdir/18_mPCRPrimers", mode: "copy"
 	
 	input:
 	path(fin_snps)
@@ -448,6 +448,8 @@ process makePrimers {
 	
 	"""
 	vcf_2_ngsprimerplex.rb $fin_snps > ${fin_snps.simpleName}.npp.txt
+	bwa index $refseq
+	NGS_primerplex.py -regions ${fin_snps.simpleName}.npp.txt -ref $refseq -ad1 $primerSeq1 -ad2 $primerSeq2 -run ${fin_snps.simpleName} $NPP_params
 	"""
 
 }
@@ -456,7 +458,7 @@ process makeBaits {
 
 	// Make bait sets from selected SNPs using BaitsTools
 	
-	publishDir "$params.outdir/18_Baits", mode: "copy"
+	publishDir "$params.outdir/19_Baits", mode: "copy"
 	
 	input:
 	path(fin_snps)
@@ -470,6 +472,27 @@ process makeBaits {
 	"""
 
 }
+
+/* process plinkPCA {
+
+	// Verify that chosen SNPs replicate structure of data using PCA
+	
+	publishDir "$params.outdir/20_PCAs", mode: 'copy'
+	
+	input:
+	path thin_vcf
+	
+	output:
+	
+	"""
+	vcftools --vcf remapped.vcf --min-alleles 2 --max-alleles 2 --plink --out ${thin_vcf.simpleName}
+	plink2 --pedmap ${thin_vcf.simpleName} --pca biallelic-var-wts --allow-extra-chr --chr-set ${params.haploidN} --bad-freqs
+	get_PCA_snps.rb plink2.eigenvec.var chr_maps.csv ${params.maxPCASNPs} ${params.maxPCAPC} > pca_sites.txt
+	vcftools --gzvcf $thin_vcf --positions pca_sites.txt --recode -c | gzip > ${thin_vcf.simpleName}.pca.recode.vcf.gz
+	cp .command.log ${thin_vcf.simpleName}.pca.log
+	"""
+
+} */
 
 workflow {
 	main:
