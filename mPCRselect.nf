@@ -449,7 +449,7 @@ process makePrimers {
 	"""
 	vcf_2_ngsprimerplex.rb $fin_snps > ${fin_snps.simpleName}.npp.txt
 	bwa index $refseq
-	NGS_primerplex.py -regions ${fin_snps.simpleName}.npp.txt -ref $refseq -ad1 $primerSeq1 -ad2 $primerSeq2 -run ${fin_snps.simpleName} $NPP_params
+	NGS_primerplex.py -regions ${fin_snps.simpleName}.npp.txt -ref $refseq -ad1 ${params.primerSeq1} -ad2 ${params.primerSeq2} -run ${fin_snps.simpleName} ${params.NPP_params}
 	"""
 
 }
