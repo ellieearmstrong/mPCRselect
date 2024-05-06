@@ -444,8 +444,6 @@ process makePrimers {
 	output:
 	path "${fin_snps.simpleName}.npp.txt"
 	
-	when:
-	params.makePrimers == 1
 	
 	"""
 	vcf_2_ngsprimerplex.rb $fin_snps > ${fin_snps.simpleName}.npp.txt
@@ -464,9 +462,6 @@ process makeBaits {
 	
 	output:
 	path "${fin_snps.simpleName}*"
-	
-	when:
-	params.makeBaits == 1
 	
 	"""
 	baitstools vcf2baits -i $fin_snps -r $refseq -e -o ${fin_snps.simpleName} ${params.baitsparams}
