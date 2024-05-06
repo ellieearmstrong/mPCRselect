@@ -503,7 +503,7 @@ process plinkPCA {
 	path(fst_pi_vcf)
 	
 	output:
-	path '*eigenvec*'
+	//path '*eigenvec*'
 	path 'plink2.pca.log'
 	
 	"""
