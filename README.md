@@ -64,7 +64,9 @@ Install BaitsTools:
 
 ## Pipeline Configuration  
 A standard local configuration profile that installs the required dependencies through Conda/Mamba is included in the `nextflow.config` file under the `conda` profile.  
+
 A basic explanation of configuring the software parameters is available in the [tutorial](docs/TUTORIAL.Md).  
+
 Given the wide variety of computing architectures, we cannot provide detailed configuration settings for all software processes. Please consult your computing staff and the Nextflow documentation to generate custom profiles for your system.  
 
 ## Running the Pipeline  
