@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Modifications by M.G. Campana, 21 Apr 2022
 # Header output rather than ignored
