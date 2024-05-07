@@ -400,6 +400,7 @@ process piFinalSNPs {
 	script:
 	filelist = sel_snps.join("\t")
 	"""
+	for i in *pi.vcf.gz; do bgzip -d \$i; gzip \${i%.gz}; done
 	input=`echo $filelist`
 	get_best_snps.rb ${params.maxFstSNPs} \$input > best_snps.txt
 	vcftools --gzvcf $thin_vcf --positions best_snps.txt --recode -c | bgzip > ${thin_vcf.simpleName}.finPi.vcf.gz

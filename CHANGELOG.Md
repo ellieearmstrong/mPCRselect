@@ -1,6 +1,7 @@
 # CHANGELOG  
 
 ### Versions 0.3.0  
+Added documentation  
 Added NULL option bypass to all filter processes  
 plinkPCA now used for post-hoc quality checks rather than SNP selection  
 Removed PCA-associated scripts  
