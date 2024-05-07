@@ -2,8 +2,6 @@
 
 # Simple plot of PLINK2 PC1 versus 2
 
-library(ggplot2)
-
 # Set up arguments
 pca_args = commandArgs(trailingOnly=TRUE) # Get input arguments
 pca <- read.table(pca_args) # PLINK2 eigenvec file
