@@ -13,7 +13,7 @@ pc1_percent <- round((eigenval[1,]/total_variance)*100, digits = 2)
 pc2_percent <- round((eigenval[2,]/total_variance)*100, digits = 2)
 
 gsub(".eigenvec", ".pca.pdf", pca_args)
-png(gsub(".eigenvec", ".pca.png", pca_args), width = 10, height = 10)
+png(gsub(".eigenvec", ".pca.png", pca_args), width = 500, height = 500)
 	pc1lab = paste("PC1: ", pc1_percent, "%", sep = "")
 	pc2lab = paste("PC2: ", pc2_percent, "%", sep = "")
 	plot(pca$V2, pca$V3, xlab = pc1lab, ylab = pc2lab)
