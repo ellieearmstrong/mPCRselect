@@ -512,7 +512,7 @@ process plinkPCA {
 		vcftools --gzvcf \$vcf --min-alleles 2 --max-alleles 2 -c --recode | gzip > \${vcf%.vcf.gz}.biallelic.vcf.gz
 		plink2 --vcf \${vcf%.vcf.gz}.biallelic.vcf.gz --make-rel --pca biallelic-var-wts --allow-extra-chr --chr-set ${params.haploidN} --bad-freqs --out \${vcf%.vcf.gz}.biallelic
 		awk '{print \$NR}' \${vcf%.vcf.gz}.biallelic.rel > \${vcf%.vcf.gz}.biallelic.rel.diag # https://www.biostars.org/p/436945/
-		plotPCA.R \${vcf%.vcf.gz}.biallelic.eigenval
+		plotPCA.R \${vcf%.vcf.gz}.biallelic.eigenvec
 	done
 	cp .command.log plink2.pca.log
 	"""
