@@ -2,7 +2,7 @@
 Pipeline for selecting ancestry and individual identification informative SNPs from variant call files (VCF).  
 
 ## Dependencies  
-mPCRselect depends on the following software:  
+mPCRselect depends on the following software to perform the SNP selection and optimization pipeline:  
 
 Programming Languages:  
 * Nextflow v. >= 23.10.0 [1]  
@@ -24,26 +24,32 @@ Required Packages:
 * bgzip from HTSlib v. >= 1.18 [11]  
 * BCFtools v. >= 1.18 [11]  
 
-Optional Packages:  
+## Optional Dependencies:  
+The following packages are optional, but are required for multiplex primer and/or hybridization capture bait design.  
+
 For multiplex primer design:  
-* NGS_primerplex.py from NGS-PrimerPlex [8]  
-* BWA v. 0.7.17 [9] and NGS-PrimerPlex dependencies  
+* NGS_primerplex.py from NGS-PrimerPlex [12]  
+* BWA v. 0.7.17 [13,14] and NGS-PrimerPlex dependencies  
 
 For hybridization capture bait design:  
-* BaitsTools v. 1.8.1 [10]  
+* BaitsTools v. 1.8.1 [15]  
 
 
 ## Installation:  
 
 ## References  
 1. Di Tommaso, P., Chatzou, M., Floden, E.W., Prieto Barja, P., Palumbo, E., Notredame, C. (2017) Nextflow enables reproducible computational workflows. *Nat Biotechnol*, __35__, 316–319. DOI: [10.1038/nbt.3820](https://www.nature.com/articles/nbt.3820).  
-2. Ruby: A Programmer's Best Friend (2024) (http://www.ruby-lang.org). Accessed 7 May 2024.  
+2. Ruby: A Programmer's Best Friend (2024) http://www.ruby-lang.org. Accessed 7 May 2024.  
 3. R Core Team (2020) *R: A language and environment for statistical computing.* R Foundation for Statistical Computing, Vienna, Austria. https://www.r-project.org/.  
 4. python (2024) https://www.python.org/. Accessed 7 May 2024.  
 5. Danecek, P., Auton, A., Abecasis, G., Albers, C.A., Banks, E., DePristo, M.A., Handsaker, R.E., Lunter, G., Marth, G.T., Sherry, S.T., McVean, G., Durbin, R. (2011) The variant call format and VCFtools. *Bioinformatics*, __27__, 2156–2158. DOI: [10.1093/bioinformatics/btr330](https://academic.oup.com/bioinformatics/article/27/15/2156/402296).  
 6. Quinlan, A.R., Hall, I.M. (2010) BEDTools: a flexible suite of utilities for comparing genomic features. *Bioinformatics*, __26__, 841-842, DOI: [10.1093/bioinformatics/btq0333](https://academic.oup.com/bioinformatics/article/26/6/841/244688).  
-7. 
+7. Chang, C.C., Chow, C.C., Tellier, L.C.A.M., Vattikuti, S., Purcell, S.M., Lee, J.J. (2015) Second-generation PLINK: rising to the challenge of larger and richer datasets. *GigaScience*, __4__, s13742-015-0047-8. DOI: [10.1186/s13742-015-0047-8](https://doi.org/10.1186/s13742-015-0047-8).  
 8. Wickham, H., Averick, M., Bryan, J., Chang, W., D'Agostino McGowan, L., François, R., Grolemund, G., Hayes, A., Henry, L., Hester, J., Kuhn, M., Pedersen, T.L., Miller, E., Bache, S.M., Müller, K., Ooms, J., Robinson, D., Seidel, D.P., Spinu, V., Takahashi, K., Vaughan, D., Wilke, C., Woo, K. Yutani, H. (2019). Welcome to the Tidyverse. *J Open Source Softw*, __4__, 1686. DOI: [10.21105/joss.01686](https://joss.theoj.org/papers/10.21105/joss.01686).  
-9. Kuhn, M. (2008) Building Predictive Models in R Using the caret package. *J Stat Soft*, _28_, 1–26. DOI: [10.18637/jss.v028.i05](https://doi.org/10.18637/jss.v028.i05).  
+9. Kuhn, M. (2008) Building Predictive Models in R Using the caret package. *J Stat Soft*, __28__, 1–26. DOI: [10.18637/jss.v028.i05](https://doi.org/10.18637/jss.v028.i05).  
 10. Wickham, H. (2016) *ggplot2: Elegant Graphics for Data Analysis.* Springer-Verlag, New York, USA.  
 11. Danecek, P., Bonfield, J.K., Liddle, J., Marshall, J., Ohan, V., Pollard, M.O., Whitwham, A., Keane, T., McCarthy, S.A., Davies, R.M., Li, H. (2021) Twelves years of SAMtools and BCFtools. *GigaScience*, __10__, giab008. DOI: [10.1093/gigascience/giab008](https://academic.oup.com/gigascience/article/10/2/giab008/6137722).  
+12. Kechin, A., Borobova, V., Boyarskikh, U., Khrapov, E., Subbotin, S., Filipenko, M. (2020) NGS-PrimerPlex: high-throughput primer design for multiplex polymerase chain reactions. *PLoS Comput Biol*, __16__, e1008468. DOI: [10.1371/journal.pcbi.1008468](https://doi.org/10.1371/journal.pcbi.1008468).  
+13. Li, H., Durbin, R. (2009) Fast and accurate short read alignment with Burrows–Wheeler transform. *Bioinformatics*, __25__, 1754-1760. DOI: [10.1093/bioinformatics/btp324](https://doi.org/10.1093/bioinformatics/btp324).  
+14. Li, H., Durbin, R. (2010) Fast and accurate long-read alignment with Burrows-Wheeler transform. *Bioinformatics*, __26__, 589-595. DOI: [10.1093/bioinformatics/btp698](https://doi.org/10.1093/bioinformatics/btp698).  
+15. Campana, M.G. (2018) BaitsTools: software for hybridization capture bait design. *Mol Ecol Resour*, __18__, 356-361. DOI: [10.1111/1755-0998.12721](https://doi.org/10.1111/1755-0998.12721).  
