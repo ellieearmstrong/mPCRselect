@@ -6,7 +6,7 @@
 pca_args = commandArgs(trailingOnly=TRUE) # Get input arguments
 pca <- read.table(pca_args) # PLINK2 eigenvec file
 eigenval <- read.table(gsub(".eigenvec",".eigenval", pca_args)) #PLINK2 eigenval file
-total_variance <- sum(read.table(gsub(".eigenvec",".rel.diag", pca_args))
+total_variance <- sum(read.table(gsub(".eigenvec",".rel.diag", pca_args)))
 pc1_percent <- round((eigenval[1,]/total_variance)*100, digits = 2)
 pc2_percent <- round((eigenval[2,]/total_variance)*100, digits = 2)
 
