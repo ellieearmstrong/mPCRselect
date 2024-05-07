@@ -3,48 +3,49 @@
 # This script (make_fst_plots.R) was modified from code written by Chenyang Li (2024) 
 # available at: https://github.com/ChenyangLi6/SNP-panel
 
-# Modifications to the original code by Michael G. Campana are U.S. government works
-# and not subject to copyright. Modifications include generalizations of the code to use
+# Modifications to the original code by Michael G. Campana (2024) are United States 
+# government works and in the public domain in the U.S.A. These modifications are
+# published from the United States. Modifications include code generalizations to use
 # command-line arguments, random resampling of individuals to permit different numbers
 # of individuals per population, renaming of variables for clarity and general fixes
 # for operation in the mPCRselect pipeline.
 
 # Original and unmodified code are subject to copyright under the University of Southern
-# California Research License 2.0 (USC-RL 2.0), whose terms are copied below.
+# California Research License 2.0 (USC-RL v2.0), whose terms are copied below.
 
-#This software is Copyright © 2024 The University of Southern California. All Rights 
-#Reserved.
+# This software is Copyright © 2024 The University of Southern California. All Rights 
+# Reserved.
  
-#Permission to use, copy, modify, and distribute this software and its documentation 
-#for educational, research and non-profit purposes, without fee, and without a written 
-#agreement is hereby granted, provided that the above copyright notice, this 
-#paragraph and the following three paragraphs appear in all copies.
+# Permission to use, copy, modify, and distribute this software and its documentation 
+# for educational, research and non-profit purposes, without fee, and without a written 
+# agreement is hereby granted, provided that the above copyright notice, this 
+# paragraph and the following three paragraphs appear in all copies.
  
-#Permission to make commercial use of this software may be obtained by contacting:
+# Permission to make commercial use of this software may be obtained by contacting:
  
-#USC Stevens Center for Innovation
-#University of Southern California
-#1150 S. Olive Street, Suite 2300
-#Los Angeles, CA 90115, USA
-#E-mail to: info@stevens.usc.edu and cc to: accounting@stevens.usc.edu
+# USC Stevens Center for Innovation
+# University of Southern California
+# 1150 S. Olive Street, Suite 2300
+# Los Angeles, CA 90115, USA
+# E-mail to: info@stevens.usc.edu and cc to: accounting@stevens.usc.edu
  
-#This software program and documentation are copyrighted by The University of 
-#Southern California. The software program and documentation are supplied "as is", 
-#without any accompanying services from USC. USC does not warrant that the 
-#operation of the program will be uninterrupted or error-free. The end-user 
-#understands that the program was developed for research purposes and is advised 
-#not to rely exclusively on the program for any reason.
+#T his software program and documentation are copyrighted by The University of 
+# Southern California. The software program and documentation are supplied "as is", 
+# without any accompanying services from USC. USC does not warrant that the 
+# operation of the program will be uninterrupted or error-free. The end-user 
+# understands that the program was developed for research purposes and is advised 
+# not to rely exclusively on the program for any reason.
  
-#IN NO EVENT SHALL THE UNIVERSITY OF SOUTHERN CALIFORNIA BE LIABLE TO ANY 
-#PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, 
-#INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS 
-#DOCUMENTATION, EVEN IF THE UNIVERSITY OF SOUTHERN CALIFORNIA HAS BEEN 
-#ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. THE UNIVERSITY OF SOUTHERN 
-#CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT 
-#LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#PARTICULAR PURPOSE. THE SOFTWARE PROVIDED HEREUNDER IS ON AN "AS IS" 
-#BASIS, AND THE UNIVERSITY OF SOUTHERN CALIFORNIA HAS NO OBLIGATIONS TO 
-#PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
+# IN NO EVENT SHALL THE UNIVERSITY OF SOUTHERN CALIFORNIA BE LIABLE TO ANY 
+# PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, 
+# INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS 
+# DOCUMENTATION, EVEN IF THE UNIVERSITY OF SOUTHERN CALIFORNIA HAS BEEN 
+# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. THE UNIVERSITY OF SOUTHERN 
+# CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT 
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
+# PARTICULAR PURPOSE. THE SOFTWARE PROVIDED HEREUNDER IS ON AN "AS IS" 
+# BASIS, AND THE UNIVERSITY OF SOUTHERN CALIFORNIA HAS NO OBLIGATIONS TO 
+# PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 # Input is PLINK .raw format encoded using --recode A
 
