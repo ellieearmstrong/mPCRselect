@@ -5,40 +5,61 @@ Pipeline for selecting ancestry and individual identification informative SNPs f
 mPCRselect depends on the following software to perform the SNP selection and optimization pipeline:  
 
 Programming Languages:  
-* Nextflow v. >= 23.10.0 [1]  
-* Ruby v. >= 3.2.2 [2]  
-* R v. >= 4.2.3 [3]  
-* Python v. >= 3.0 [4]  
+* [Nextflow](https://www.nextflow.io/) v. >= 23.10.0 [1]  
+* [Ruby](http://www.ruby-lang.org) v. >= 3.2.2 [2]  
+* [R](https://www.r-project.org/) v. >= 4.2.3 [3]  
+* [Python](https://www.python.org/) v. >= 3.0 [4]  
 
-POSIX Utilities:
+Standard Unix/Linux/POSIX Utilities:
 * gzip  
 * awk  
+* Bash
 
 Required Bioinformatics Packages:  
-* VCFtools v. 0.1.16 [5]  
-* BEDtools v. >= 2.31.0 [6]  
-* PLINK2 v. >= 2.00a5.10 [7]  
-* bgzip from HTSlib v. >= 1.18 [8]  
-* BCFtools v. >= 1.18 [9]  
+* [VCFtools](https://vcftools.github.io/index.html) v. 0.1.16 [5]  
+* [BEDTools](https://bedtools.readthedocs.io/en/latest/) v. >= 2.31.0 [6]  
+* [PLINK 2](https://www.cog-genomics.org/plink/2.0/) v. >= 2.00a5.10 [7]  
+* [bgzip](http://www.htslib.org/) from HTSlib v. >= 1.18 [8]  
+* [BCFtools](http://www.htslib.org/) v. >= 1.18 [9]  
 
 Required R Packages:
-* tidyverse v. 1.3.1 [9]  
-* caret v. 6.0.94 [10]  
-* ggplot2 v. 3.4.0 [11]  
+* [tidyverse](https://www.tidyverse.org/) v. 1.3.1 [9]  
+* [caret](https://topepo.github.io/caret/) v. 6.0.94 [10]  
+* [ggplot2](https://ggplot2.tidyverse.org/) v. 3.4.0 [11]  
 
 ## Optional Dependencies:  
 The following packages are optional, but are required for multiplex primer and/or hybridization capture bait design.  
 
 For multiplex primer design:  
-* NGS_primerplex.py from NGS-PrimerPlex [12]  
-* BWA v. 0.7.17 [13,14] and NGS-PrimerPlex dependencies  
+* `NGS_primerplex.py` from [NGS-PrimerPlex](https://github.com/aakechin/NGS-PrimerPlex) [12]  
+* [BWA](http://bio-bwa.sourceforge.net/) v. 0.7.17 [13,14]
+* NGS-PrimerPlex python dependencies installed using the NGS-PrimerPlex `install_for_linux.sh` script  
 
 For hybridization capture bait design:  
-* BaitsTools v. 1.8.1 [15]  
+* [BaitsTools](https://github.com/campanam/BaitsTools) v. 1.8.1 [15]  
 
 ## Installation:  
+All dependencies can be installed manually following the instructions included in their external documentation. While Nextflow and the optional dependencies must be installed manually, the remaining dependencies can be installed using Conda/Mamba through the 'conda' profile included in the default mPCRselect configuration.  
 
+Install Nextflow: `curl -s https://get.nextflow.io | bash`  
+Install Conda/Mamba (Recommended): See installation instructions [here](https://conda.io/projects/conda/en/latest/user-guide/install/index.html) and [here](https://mamba.readthedocs.io/en/latest/installation.html#installation)  
+Install the pipeline: `nextflow pull ellieearmstrong/mPCRselect -r <version>`, where `version` is the needed release. Setting the version as `main` will get the latest primary release.  
 
+Install `NGS_primerplex.py` script:  
+1. Clone the NGS-PrimerPlex repository: `git clone https://github.com/aakechin/NGS-PrimerPlex`  
+2. Install the Python dependencies: `bash install_for_linux.sh`  
+3. Make the script executable: `chmod +x NGS_primerplex.py`  
+4. Modify the shebang line of the `NGS_primerplex.py` script: Change the first line from `#!/usr/bin/python3` to `#!/usr/bin/env python3` 
+5. Move the `NGS_primerplex.py` script to a directory in your PATH variable.  
+
+Install BaitsTools:  
+1. Install Ruby and RubyGems: See installation instructions [here](http://www.ruby-lang.org).  
+2. Build and install the BaitsTools gem following the instructions [here](https://github.com/campanam/BaitsTools).  
+
+## Pipeline Configuration  
+
+## Running the Pipeline  
+Enter `nextflow run ellieearmstrong/mPCRselect -r <version> -c <config_file>` to run the pipeline, where `version` is the installed mPCRselect release. Further details on running Nextflow pipelines are available in the official Nextflow documentation.  
 
 ## References  
 1. Di Tommaso, P., Chatzou, M., Floden, E.W., Prieto Barja, P., Palumbo, E., Notredame, C. (2017) Nextflow enables reproducible computational workflows. *Nat Biotechnol*, __35__, 316–319. DOI: [10.1038/nbt.3820](https://www.nature.com/articles/nbt.3820).  
