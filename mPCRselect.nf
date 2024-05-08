@@ -158,7 +158,7 @@ process filterMappability {
 
 process filterSites {
 
-	// Remove indels, non-bialleleic SNPs, sites with too much missing data
+	// Remove indels, non-biallelic SNPs, sites with too much missing data
 	// Remove sites without PASS flag
 	
 	publishDir "$params.outdir/07_SiteFilterSNPs", mode: 'copy'

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 # Script to identify samples that have too much missing data from a VCFtools idepth file
-# Usage is ruby indvmiss.rb <file> <missingess in float>
+# Usage is ruby indvmiss.rb <file> <missingness in float>
 
 @header = true # Switch to ignore header line
 @max_missingness = ARGV[1].to_f
