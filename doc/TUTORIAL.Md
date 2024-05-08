@@ -81,7 +81,8 @@ thin = 100000 // Distance to randomly thin for LD avoidance. Set to "NULL" to by
 	
 *BaitsTools parameters*  
 `makeBaits`: Switch controlling whether to make capture baits (O = no, 1 = yes). Default is `0`.  
-`baitsparams`: Parameter string for BaitsTools vcf2baits. See [BaitsTools documentation](https://github.com/campanam/BaitsTools) fro details. Default is `'-w -c -N -n -x -J -y -l -B'`.  
+`baitsparams`: Parameter string for BaitsTools vcf2baits. See [BaitsTools documentation](https://github.com/campanam/BaitsTools) fro details. Default is `'-w -c -N -n -x -J -y -B'`.  
+*NB: PLINK 2 VCF output does not retain chromosome information in the header, so some BaitsTools options (such as `-l`) will not work.*  
 
 3c. Optionally, add a custom profile for your computer architecture to the profiles section of the config file. Consult the [Nextflow documentation](https://www.nextflow.io/) and your computing staff for optimizing these parameters.  
 
