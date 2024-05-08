@@ -94,7 +94,7 @@ dfPop1 <- dfPop1[, common_columns_ab]
 dfPop2 <- dfPop2[, common_columns_ab]
 totalsnps <- ncol(dfPop1) # Adjust maximum number of SNPs to those that can be used
 if (requested_snps > totalsnps) {requested_snps <- totalsnps - 40} # Fix bad values and prevent issue with +40 below in resampling
-if (requested_snp < 1) { requested_snps <- 1 } # Do not allow negative SNP counts for tiny datasets
+if (requested_snps < 1) { requested_snps <- 1 } # Do not allow negative SNP counts for tiny datasets
 if (snp_interval > requested_snps) {snp_interval <- requested_snps} # Fix bad values
 
 markers <- colnames(dfPop1)
