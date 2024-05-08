@@ -506,6 +506,7 @@ process plinkPCA {
 	output:
 	path '*eigenv*'
 	path 'plink2.pca.log'
+	path '*.pca.png'
 	
 	"""
 	#!/usr/bin/env bash
