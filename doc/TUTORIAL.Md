@@ -11,27 +11,27 @@ mPCRselect's primary input is a multi-sample variant call format (VCF) file of g
 mPCRselect also requires a two-column headered comma-separated values (CSV) format file assigning individuals in the VCF to populations, e.g.:
 
 Sample,Population  
-<samp1>,<pop1>  
-<samp2>,<pop1>  
-<samp3>,<pop2>  
-<samp4>,<pop2>  
-<samp5>,<pop3>  
-<samp6>,<pop3>  
+\<samp1\>,\<pop1\>  
+\<samp2\>,\<pop1\>  
+\<samp3\>,\<pop2\>  
+\<samp4\>,\<pop2\>  
+\<samp5\>,\<pop3\>  
+\<samp6\>,\<pop3\>  
 
 2. Prepare optional input files  
 mPCRselect can perform optional filters using the following files:  
 2a. Sample list  
 mPCRselect can automatically remove unwanted samples from the original provided VCF using a sample list. This is a simple headerless text file listing the samples to remove, e.g.:  
 
-<samp1>  
-<samp3>  
+\<samp1\>  
+\<samp3\>  
 
 2b. mPCRselect can remove low-mappability and other unwanted regions using a browser extensible data (BED) format file specifying the genomic coordinates of regions to remove.  
 
 2c. mPCRselect can automatically filter variants to retain only polymorphisms on specified chromosomes. Chromosomes are specified in a headerless text file listing chromosomes to retain, e.g:  
 
-<chr1>  
-<chr2>  
+\<chr1\>  
+\<chr2\>  
 
 2d. To produce multiplex primers or hybridization capture baits from the selected sites, mPCRselect requires the reference genome sequence in FASTA format.  
 
