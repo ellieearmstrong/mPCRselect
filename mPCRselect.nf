@@ -397,6 +397,7 @@ process piFinalSNPs {
 	output:
 	path "${thin_vcf.simpleName}.finPi.vcf.gz", emit: vcf
 	path "${thin_vcf.simpleName}.finPi.log"
+	path "${thin_vcf.simpleName}.finPi.RMP.txt"
 	
 	script:
 	filelist = sel_snps.join("\t")
@@ -405,6 +406,9 @@ process piFinalSNPs {
 	input=`echo $filelist`
 	get_best_snps.rb ${params.maxFstSNPs} \$input > best_snps.txt
 	vcftools --gzvcf $thin_vcf --positions best_snps.txt --recode -c | bgzip > ${thin_vcf.simpleName}.finPi.vcf.gz
+	vcftools --gzvcf ${thin_vcf.simpleName}.finPi.vcf.gz --freq --out ${thin_vcf.simpleName}.finPi
+	tail -n+2 ${thin_vcf.simpleName}.finPi.frq > ${thin_vcf.simpleName}.finPi.nohead.frq
+	RMP_calc.R ${thin_vcf.simpleName}.finPi.nohead.frq > ${thin_vcf.simpleName}.finPi.RMP.txt
 	cp .command.log ${thin_vcf.simpleName}.finPi.log
 	"""
 	

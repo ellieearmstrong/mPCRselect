@@ -11,8 +11,8 @@ freq_allele <- read.table(args, sep = '\t')
 #modify header
 freq_allele <- freq_allele %>%
   rename(chr=V1, position=V2, N_Alleles=V3,N_Chr=V4) %>%
-  tidyr::separate(V5, into = c("Allele_ID1", "Allele_ID1_freq"), sep = " ") %>%
-  tidyr::separate(V6, into = c("Allele_ID2", "Allele_ID2_freq"), sep = " ")
+  tidyr::separate(V5, into = c("Allele_ID1", "Allele_ID1_freq"), sep = ":") %>%
+  tidyr::separate(V6, into = c("Allele_ID2", "Allele_ID2_freq"), sep = ":")
 
 #calculate genotype frequences as p^2, q^2, or 2pq (assuming HWE)
 freq_allele <- freq_allele %>%
@@ -28,7 +28,9 @@ freq_allele <- freq_allele %>%
 
 #calculate maximum and minimum RMP (product of genotype frequences across profile)
 RMP_max = prod(freq_allele$max)
-print(RMP_max)
+print(paste("RMP Max:" RMP_max))
 
 RMP_min = prod(freq_allele$min)
-print(RMP_min)
+print(paste("RMP Min:", RMP_min))
+
+print(freq_allele)
