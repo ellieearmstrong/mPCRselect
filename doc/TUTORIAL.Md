@@ -92,6 +92,27 @@ thin = 100000 // Distance to randomly thin for LD avoidance. Set to "NULL" to by
 Add the `-bg` command-line option to run the pipeline in the background and/or the `-resume` option to restart an incomplete prior run.  
 
 5. Output files  
+Within the specified output directory, mPCRselect will generate subdirectories containing the output from each process. Most processes will produce a (b)gzipped VCF file and a log of the process results. Subdirectories include:  
+`01_RemoveSamples`: VCF after removal of unwanted samples. Directory will be omitted if process bypassed.  
+`02_GQSNPs`: VCF after filtering for GQ.  
+`03_SingletonSNPs`: VCF after singleton and individual-unique doubleton removal. Also will include a '.singleton' file listing singleton sites removed.  
+`04_MissingIndvSNPs`: VCF after filtering individuals for missingness.  
+`05_CullSNPs`: VCF after culling SNPs for having a nearby SNP.  
+`06_MapSNPs`: VCF after removing low-mappability and unwanted regions. Directory will be omitted if process bypassed.  
+`07_SiteFilterSNPs`: VCF after removing indels, non-biallelic SNPs, sites with too much missing data, and sites that do not pass quality filters.  
+`08_ChrSNPs`: VCF after removing unwanted chromosomes and contigs. Directory will be omitted if process bypassed.  
+`09_ThinSNPs`: VCF after thinning SNPs by physical distance.  
+`10_PlinkLD`: VCF after filtering by linkage-disequilibrium in PLINK 2. Directory will also include PLINK 2 files ('.bed', '.bim', '.fam').  
+`11_PopulationsSNPs`: VCFs after splitting by population assignment. Directory will also contain these files converted to RAW format.  
+`12_PopulationsPi`: VCFs of highest pi sites for each population.  
+`13_FstSNPs`: VCF of highest Fst sites (as calculated by VCFtools).  
+`14_FstPlots`: Output from the greedy algorithm. For each replicate run, there will be a CSV ('repN.csv') and plot (PNG format) comparing the accuracy of highest Fst SNPs to randomly selected SNPs. There is also a list of the highest Fst sites for that replicate ('repN.highFst.csv').  
+`15_FstFinalSNPs`: VCF of the final selected Fst SNPs.  
+`16_PiFinalSNPs`: VCF of the final selected pi SNPs. There will also be a text file ('.RMP.txt') giving the highest and lowest calculated RMP values and the pi site allele frequencies as calculated by VCFtools.  
+`17_Fst_Pi_SNPs`: VCF of the concatenated Fst and pi SNPs.  
+`18_mPCRPrimers`: Output of NGS-PrimerPlex. Directory will be omitted if primers are not made.  
+`19_Baits`: Output of BaitsTools. Directory will be omitted if baits are not made.  
+`20_plinkPCA`: PLINK 2 PCA output and plots for the primary stages of the pipeline.  
 
 ## References  
 1. Danecek, P., Bonfield, J.K., Liddle, J., Marshall, J., Ohan, V., Pollard, M.O., Whitwham, A., Keane, T., McCarthy, S.A., Davies, R.M., Li, H. (2021) Twelve years of SAMtools and BCFtools. *GigaScience*, __10__, giab008. DOI: [10.1093/gigascience/giab008](https://academic.oup.com/gigascience/article/10/2/giab008/6137722).  

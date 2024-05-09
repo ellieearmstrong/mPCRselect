@@ -32,5 +32,3 @@ print(paste("RMP Max:", RMP_max))
 
 RMP_min = prod(freq_allele$min)
 print(paste("RMP Min:", RMP_min))
-
-print(freq_allele)
