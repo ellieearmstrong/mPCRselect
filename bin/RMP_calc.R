@@ -28,7 +28,7 @@ freq_allele <- freq_allele %>%
 
 #calculate maximum and minimum RMP (product of genotype frequences across profile)
 RMP_max = prod(freq_allele$max)
-print(paste("RMP Max:" RMP_max))
+print(paste("RMP Max:", RMP_max))
 
 RMP_min = prod(freq_allele$min)
 print(paste("RMP Min:", RMP_min))

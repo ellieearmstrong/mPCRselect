@@ -43,7 +43,8 @@ The following describes the mPCRselect pipeline processes in the order in which 
 15. `fstFinalSNPs`: The `fstFinalSNPs` process uses the custom Ruby script `get_best_snps.rb` to find the sites that appear the most frequently across the maximum Fst runs (both greedy-algorithm and using VCFtools). The process then uses VCFtools to select the final Fst site VCF.  
 `get_best_snps.rb` is executed: `get_best_snps.rb <maximum Fst SNPs> <input VCF1> ... <input VCFn>`  
 
-16. `piFinalSNPs`: The `piFinalSNPs` process uses the `get_best_snps.rb` script to identify the sites that appear most frequently in the selected highest-pi datasets. The process then uses VCFtools to select the final pi site VCF.  
+16. `piFinalSNPs`: The `piFinalSNPs` process uses the `get_best_snps.rb` script to identify the sites that appear most frequently in the selected highest-pi datasets. The process then uses VCFtools to select the final pi site VCF and calculate allele frequencies for these sites. The process then uses the custom R script `RMP_calc.R` to calculate minimum and maximum random match probabilities (RMP).  
+`RMP_calc.R` is executed: `RMP_calc.R <headerless VCFtools .frq file>  
 
 17. `concatFinalSNPs`: The `concatFinalSNPs` process uses BCFtools [4] concat to merge the final Fst and pi selected SNPs.  
 
