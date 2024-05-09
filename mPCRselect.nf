@@ -386,6 +386,7 @@ process fstFinalSNPs {
 process piFinalSNPs {
 
 	// Merge datasets and find most observed Pi SNP selections
+	// Calculate RMP probabilities
 	
 	publishDir "$params.outdir/16_PiFinalSNPs", mode: 'copy'
 	

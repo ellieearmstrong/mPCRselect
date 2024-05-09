@@ -1,6 +1,7 @@
 flowchart TB
     subgraph " "
     v0["samp_vcf"]
+    v67["samples"]
     v11["map_bed"]
     v16["chrs"]
     v26["Channel.fromPath"]
@@ -38,6 +39,8 @@ flowchart TB
     v61[" "]
     v64[" "]
     v65[" "]
+    v66[" "]
+    v69[" "]
     end
     v3([removeSingletons])
     v6([removeMissingIndv])
@@ -58,11 +61,14 @@ flowchart TB
     v57([makePrimers])
     v60([makeBaits])
     v63([plinkPCA])
+    v68([removeSamples])
     v27(( ))
     v37(( ))
     v45(( ))
     v49(( ))
-    v0 --> v1
+    v0 --> v68
+    v68 --> v69
+    v68 --> v1
     v1 --> v3
     v1 --> v2
     v3 --> v6
@@ -114,6 +120,7 @@ flowchart TB
     v50 --> v52
     v50 --> v51
     v50 --> v63
+    v50 --> v66
     v52 --> v57
     v52 --> v53
     v52 --> v60
