@@ -9,6 +9,32 @@ Smithsonian Institution
 ## Introduction  
 mPCRselect is a Nextflow [1] DSL2 pipeline for selecting and optimizing single-nucleotide polymorphisms (SNPs) for panels that reflect known population structure and identify individuals through minimized random match probability (RMP). Optionally, the pipeline can produce either massively multiplex polymerase chain reaction (PCR) primers or hybridization capture baits. Detailed descriptions of the pipeline processes and scripts are available in the [pipeline documentation](doc/pipeline_details.Md). A diagram of the complete pipeline is available [here](doc/mPCRselect.mmd).  
 
+## Installation:  
+All [dependencies](#dependencies) can be installed manually following the instructions included in their external documentation. While Nextflow and the optional dependencies must be installed manually, the remaining dependencies can be installed using Conda/Mamba through the 'conda' profile included in the default mPCRselect configuration.  
+
+Primary pipeline installation:  
+1. Install Nextflow: `curl -s https://get.nextflow.io | bash`  
+2. Install Conda/Mamba (Recommended): See installation instructions [here](https://conda.io/projects/conda/en/latest/user-guide/install/index.html) and [here](https://mamba.readthedocs.io/en/latest/installation.html#installation)  
+3. Install the pipeline: `nextflow pull ellieearmstrong/mPCRselect -r <version>`, where `version` is the needed release. Setting the version as `main` will get the latest primary release.  
+
+Install `NGS_primerplex.py` script:  
+1. Clone the NGS-PrimerPlex repository: `git clone https://github.com/aakechin/NGS-PrimerPlex`  
+2. Install the Python dependencies: `bash install_for_linux.sh`  
+3. Make the script executable: `chmod +x NGS_primerplex.py`  
+4. Modify the shebang line of the `NGS_primerplex.py` script: Change the first line from `#!/usr/bin/python3` to `#!/usr/bin/env python3` 
+5. Move the `NGS_primerplex.py` script to a directory in your PATH variable.  
+
+Install BaitsTools:  
+1. Install Ruby and RubyGems: See installation instructions [here](http://www.ruby-lang.org).  
+2. Build and install the BaitsTools gem following the instructions [here](https://github.com/campanam/BaitsTools).  
+
+## Pipeline Configuration  
+A standard local configuration profile that installs the required dependencies through Conda/Mamba is included in the `nextflow.config` file under the `conda` profile.  
+
+A basic explanation of configuring the software parameters is available in the [tutorial](docs/TUTORIAL.Md).  
+
+Given the wide variety of computing architectures, we cannot provide detailed configuration settings for all software processes. Please consult your computing staff and the Nextflow documentation to generate custom profiles for your system.  
+
 ## Dependencies  
 mPCRselect depends on the following software to perform the SNP selection and optimization pipeline:  
 
@@ -45,32 +71,6 @@ For multiplex primer design:
 
 For hybridization capture bait design:  
 * [BaitsTools](https://github.com/campanam/BaitsTools) v. 1.8.1 [15]  
-
-## Installation:  
-All dependencies can be installed manually following the instructions included in their external documentation. While Nextflow and the optional dependencies must be installed manually, the remaining dependencies can be installed using Conda/Mamba through the 'conda' profile included in the default mPCRselect configuration.  
-
-Primary pipeline installation:  
-1. Install Nextflow: `curl -s https://get.nextflow.io | bash`  
-2. Install Conda/Mamba (Recommended): See installation instructions [here](https://conda.io/projects/conda/en/latest/user-guide/install/index.html) and [here](https://mamba.readthedocs.io/en/latest/installation.html#installation)  
-3. Install the pipeline: `nextflow pull ellieearmstrong/mPCRselect -r <version>`, where `version` is the needed release. Setting the version as `main` will get the latest primary release.  
-
-Install `NGS_primerplex.py` script:  
-1. Clone the NGS-PrimerPlex repository: `git clone https://github.com/aakechin/NGS-PrimerPlex`  
-2. Install the Python dependencies: `bash install_for_linux.sh`  
-3. Make the script executable: `chmod +x NGS_primerplex.py`  
-4. Modify the shebang line of the `NGS_primerplex.py` script: Change the first line from `#!/usr/bin/python3` to `#!/usr/bin/env python3` 
-5. Move the `NGS_primerplex.py` script to a directory in your PATH variable.  
-
-Install BaitsTools:  
-1. Install Ruby and RubyGems: See installation instructions [here](http://www.ruby-lang.org).  
-2. Build and install the BaitsTools gem following the instructions [here](https://github.com/campanam/BaitsTools).  
-
-## Pipeline Configuration  
-A standard local configuration profile that installs the required dependencies through Conda/Mamba is included in the `nextflow.config` file under the `conda` profile.  
-
-A basic explanation of configuring the software parameters is available in the [tutorial](docs/TUTORIAL.Md).  
-
-Given the wide variety of computing architectures, we cannot provide detailed configuration settings for all software processes. Please consult your computing staff and the Nextflow documentation to generate custom profiles for your system.  
 
 ## Running the Pipeline  
 Enter `nextflow run ellieearmstrong/mPCRselect -r <version> -c <config_file>` to run the pipeline, where `version` is the installed mPCRselect release. Further details on running Nextflow pipelines are available in the official Nextflow documentation.  
