@@ -29,7 +29,7 @@
 # Los Angeles, CA 90115, USA
 # E-mail to: info@stevens.usc.edu and cc to: accounting@stevens.usc.edu
  
-#T his software program and documentation are copyrighted by The University of 
+# This software program and documentation are copyrighted by The University of 
 # Southern California. The software program and documentation are supplied "as is", 
 # without any accompanying services from USC. USC does not warrant that the 
 # operation of the program will be uninterrupted or error-free. The end-user 

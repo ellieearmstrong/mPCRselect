@@ -15,6 +15,7 @@ concatFinalSNPs now merges Fst and Pi SNPs
 vcf_2_ngsprimperplex.rb script converts final VCF to NGS-PrimerPlex format  
 indexRef process to index reference for NGS-PrimerPlex  
 makePrimers is no longer a dummy process  
+License information is added  
 
 ### Version 0.2.0  
 Added dummy process to generate mPCR primers  
