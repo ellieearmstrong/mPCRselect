@@ -1,0 +1,137 @@
+flowchart TB
+    subgraph " "
+    v0["samp_vcf"]
+    v67["samples"]
+    v11["map_bed"]
+    v16["chrs"]
+    v26["Channel.fromPath"]
+    v34["populations"]
+    v41["Channel.of"]
+    v54["refseq"]
+    v56["refseq"]
+    v59["refseq"]
+    v62["original_vcf"]
+    end
+    v1([filterGQ])
+    subgraph " "
+    v69[" "]
+    v2[" "]
+    v4[" "]
+    v5[" "]
+    v7[" "]
+    v8[" "]
+    v10[" "]
+    v13[" "]
+    v15[" "]
+    v18[" "]
+    v20[" "]
+    v22[" "]
+    v23[" "]
+    v24[" "]
+    v25[" "]
+    v31[" "]
+    v33[" "]
+    v36[" "]
+    v44[" "]
+    v48[" "]
+    v51[" "]
+    v53[" "]
+    v66[" "]
+    v58[" "]
+    v61[" "]
+    v64[" "]
+    v65[" "]
+    end
+    v3([removeSingletons])
+    v6([removeMissingIndv])
+    v9([cullSNPs])
+    v12([filterMappability])
+    v14([filterSites])
+    v17([filterChr])
+    v19([thinSNPs])
+    v21([plinkLD])
+    v30([splitPopulations])
+    v32([optimizePi])
+    v35([fstSNPs])
+    v43([makeFstPlots])
+    v47([fstFinalSNPs])
+    v50([piFinalSNPs])
+    v52([concatFinalSNPs])
+    v55([indexRef])
+    v57([makePrimers])
+    v60([makeBaits])
+    v63([plinkPCA])
+    v68([removeSamples])
+    v27(( ))
+    v37(( ))
+    v45(( ))
+    v49(( ))
+    v0 --> v68
+    v67 --> v68
+    v68 --> v69
+    v68 --> v1
+    v1 --> v3
+    v1 --> v2
+    v3 --> v6
+    v3 --> v5
+    v3 --> v4
+    v6 --> v9
+    v6 --> v8
+    v6 --> v7
+    v9 --> v12
+    v9 --> v10
+    v11 --> v12
+    v12 --> v14
+    v12 --> v13
+    v14 --> v17
+    v14 --> v15
+    v16 --> v17
+    v17 --> v19
+    v17 --> v18
+    v19 --> v21
+    v19 --> v20
+    v19 --> v63
+    v21 --> v30
+    v21 --> v25
+    v21 --> v24
+    v21 --> v23
+    v21 --> v22
+    v21 --> v35
+    v21 --> v47
+    v21 --> v50
+    v26 --> v27
+    v27 --> v30
+    v30 --> v32
+    v30 --> v31
+    v30 --> v37
+    v32 --> v33
+    v32 --> v49
+    v34 --> v35
+    v35 --> v36
+    v35 --> v45
+    v41 --> v37
+    v37 --> v43
+    v43 --> v44
+    v43 --> v45
+    v45 --> v47
+    v47 --> v52
+    v47 --> v48
+    v47 --> v63
+    v49 --> v50
+    v50 --> v52
+    v50 --> v51
+    v50 --> v63
+    v50 --> v66
+    v52 --> v57
+    v52 --> v53
+    v52 --> v60
+    v52 --> v63
+    v54 --> v55
+    v55 --> v57
+    v56 --> v57
+    v57 --> v58
+    v59 --> v60
+    v60 --> v61
+    v62 --> v63
+    v63 --> v65
+    v63 --> v64

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-# split_pops.rb from mPCRselect version 0.3.0
-# Michael G. Campana, 2022-2024
+# vcf_2_ngsprimperplex.rb from mPCRselect version 0.3.0
+# Michael G. Campana, 2024
 # Smithsonian Institution
 
 # CC0: To the extent possible under law, the Smithsonian Institution and Stanford 
@@ -15,30 +15,16 @@
 # In prep. Recommendations for population and individual diagnostic SNP selection in non-
 # model species.
 
-# Script to split a CSV of population assignments into population lists
-# Usage: ruby split_pops.rb <pop.csv>
+# Script to convert a VCF to NGS-PrimerPlex input format
+# Usage: ruby vcf_2_ngsprimerplex.rb <input.vcf>
 
-@pops = {} # Hash of samples keyed by pop assignment
-@header = true # Switch to discard the header
+require 'zlib'
 
-File.open(ARGV[0]) do |f1|
+Zlib::GzipReader.open(ARGV[0]) do |f1|
 	while line = f1.gets
-		if @header
-			@header = false
-		else
-			line_arr = line.strip.split(',')
-			sample = line_arr[0]
-			pop = line_arr[1]
-			if @pops.keys.include?(pop)
-				@pops[pop].push(sample)
-			else
-				@pops[pop] = [sample]
-			end
+		if line[0].chr != "#"
+			line_arr = line.split
+			puts line_arr[0] + "\t" + (line_arr[1].to_i - 1).to_s + "\t" + (line_arr[1].to_i + 1).to_s + "\t" + line_arr[2] + "\t1\tB\tW"
 		end
-	end
-end
-for key in @pops.keys
-	File.open('pop' + key + '.txt', 'w') do |f2|
-		f2.puts @pops[key].join("\n")
 	end
 end
