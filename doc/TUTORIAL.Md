@@ -119,8 +119,10 @@ It is difficult to predict the number of SNPs that will successfully yield infor
 
 6a. Make sure you have `tidyverse` [5] installed in your R environment.  
 
-6b. Subset the 
+6b. Subset the '.RMP.txt' file from `16_PiFinalSNPs` directory to only include the frequency lines of the selected SNPs. Remove all headers and RMP calculation lines.  
 
+6c. Run the `RMP_calc.R` script on the subselected file:  
+`Rscript RMP_calc.R <subselected file>`  
 ## References  
 1. Danecek, P., Bonfield, J.K., Liddle, J., Marshall, J., Ohan, V., Pollard, M.O., Whitwham, A., Keane, T., McCarthy, S.A., Davies, R.M., Li, H. (2021) Twelve years of SAMtools and BCFtools. *GigaScience*, __10__, giab008. DOI: [10.1093/gigascience/giab008](https://academic.oup.com/gigascience/article/10/2/giab008/6137722).  
 2.  McKenna, A., Hanna, M., Banks, E., Sivachenko, A., Cibulskis, K., Kernytsky, A., Garimella, K., Altshuler, D., Gabriel, S., Daly, M., DePristo, M.A. (2010) The Genome Analysis Toolkit: a MapReduce framework for analyzing next-generation DNA sequencing data. *Genome Res*, __20__, 1297-1303. DOI: [10.1101/gr.107524.110](https://genome.cshlp.org/content/20/9/1297.abstract).  
