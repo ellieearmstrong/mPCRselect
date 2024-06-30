@@ -7,7 +7,7 @@ University of Southern California
 Smithsonian Institution  
 
 ## Introduction  
-mPCRselect is a Nextflow [1] DSL2 pipeline for selecting and optimizing single-nucleotide polymorphisms (SNPs) for panels that reflect known population structure and identify individuals through minimized random match probability (RMP). Optionally, the pipeline can produce either massively multiplex polymerase chain reaction (PCR) primers or hybridization capture baits. Detailed descriptions of the pipeline processes and scripts are available in the [pipeline documentation](doc/pipeline_details.Md). A diagram of the complete pipeline is available [here](doc/mPCRselect.mmd).  
+mPCRselect is a Nextflow [1] DSL2 pipeline for selecting and optimizing single-nucleotide polymorphisms (SNPs) for panels that reflect known population structure and identify individuals through minimized random match probability (RMP). Optionally, the pipeline can produce either massively multiplex polymerase chain reaction (PCR) primers or hybridization capture baits. Detailed descriptions of the pipeline processes and scripts are available in the [pipeline documentation](doc/pipeline_details.Md). A diagram of the complete pipeline is available [here](doc/mPCRselect.mmd). Please see the [tutorial](docs/TUTORIAL.Md) for instructions on how to configure and run the pipeline.  
 
 ## License  
 The script `make_fst_plots.R` is derived from from code written by Chenyang Li (2024) available at: https://github.com/ChenyangLi6/SNP-panel. Original and unmodified code are subject to copyright under the University of Southern California Research License 2.0 (USC-RL v2.0), whose terms are available in the [USC-RLv2.0.txt](licenses/USC-RLv2.0.txt) file.  
