@@ -115,7 +115,11 @@ Within the specified output directory, mPCRselect will generate subdirectories c
 `20_plinkPCA`: PLINK 2 PCA output and plots for the primary stages of the pipeline.  
 
 6. Optimization of the SNP panel  
-It is difficult to predict the number of SNPs that will successfully yield informative mPCR primers or baits in advance since each genome has its own specific characteristics (e.g. GC content, repetitive elements, etc.). Since it may not be possible to generate usable primers or baits for all SNPs in the mPCRselect panel, we recommend that end-users generate SNP panels that are ~10-fold larger than the expected number of required SNPs. We found that requesting ~1000 SNPs worked well for panels where only ~100 SNPs were needed. The graphic output from the FstPlots output can help end-users determine the number of SNPs they need to retain from the designed panel. The random match probability of a subselected panel can be recalculated by the end-user using the `RMP_calc.R` script included in the `bin` directory of this repository.  
+It is difficult to predict the number of SNPs that will successfully yield informative mPCR primers or baits in advance since each genome has its own specific characteristics (e.g. GC content, repetitive elements, etc.). Since it may not be possible to generate usable primers or baits for all SNPs in the mPCRselect panel, we recommend that end-users generate SNP panels that are ~10-fold larger than the expected number of required SNPs. We found that requesting ~1000 SNPs worked well for panels where only ~100 SNPs were needed. The graphic output from the `14_FstPlots` output can help end-users determine the number of SNPs they need to retain from the designed panel. The random match probability of a subselected panel can be recalculated by the end-user using the `RMP_calc.R` script included in the `bin` directory of this repository.  
+
+6a. Make sure you have `tidyverse` [5] installed in your R environment.  
+
+6b. 
 
 ## References  
 1. Danecek, P., Bonfield, J.K., Liddle, J., Marshall, J., Ohan, V., Pollard, M.O., Whitwham, A., Keane, T., McCarthy, S.A., Davies, R.M., Li, H. (2021) Twelve years of SAMtools and BCFtools. *GigaScience*, __10__, giab008. DOI: [10.1093/gigascience/giab008](https://academic.oup.com/gigascience/article/10/2/giab008/6137722).  
