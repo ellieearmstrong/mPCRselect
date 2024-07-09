@@ -1,4 +1,6 @@
-/* mPCRselect version 0.3.0
+#!/usr/bin/env nextflow
+
+/* mPCRselect version 0.3.1
 Ellie E. Armstrong, Katherine A. Solari, Michael G. Campana, 2022-2024
 Stanford University, University of Southern California, and Smithsonian Institution
 
@@ -12,8 +14,6 @@ We politely request that this work be cited as:
 Armstrong EE, Li C, Campana MG, Ferrari T, Kelley JL, Petrov DA, Solari KA, Mooney JA.
 In prep. Recommendations for population and individual diagnostic SNP selection in non-
 model species. */
-
-#!/usr/bin/env nextflow
 
 process removeSamples {
 
