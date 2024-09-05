@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# get_best_snps.rb from mPCRselect version 0.3.0
+# get_best_snps.rb from mPCRselect version 0.3.1
 # Michael G. Campana, 2022-2024
 # Smithsonian Institution
 

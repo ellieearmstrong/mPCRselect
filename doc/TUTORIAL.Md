@@ -18,6 +18,8 @@ Sample,Population
 \<samp5\>,\<pop3\>  
 \<samp6\>,\<pop3\>  
 
+*NB: Samples in the input VCF that do not appear in the population file will be marked as 'NoPopAssignment' in the final PCA output. They will not be used for population-specific SNP selection.*  
+
 2. Prepare optional input files  
 mPCRselect can perform optional filters using the following files:  
 2a. Sample list  

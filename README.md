@@ -9,6 +9,8 @@ Smithsonian Institution
 ## Introduction  
 mPCRselect is a Nextflow [1] DSL2 pipeline for selecting and optimizing single-nucleotide polymorphisms (SNPs) for panels that reflect known population structure and identify individuals through minimized random match probability (RMP). Optionally, the pipeline can produce either massively multiplex polymerase chain reaction (PCR) primers or hybridization capture baits. Detailed descriptions of the pipeline processes and scripts are available in the [pipeline documentation](doc/pipeline_details.Md). A diagram of the complete pipeline is available [here](doc/mPCRselect.mmd). Please see the [tutorial](docs/TUTORIAL.Md) for instructions on how to configure and run the pipeline.  
 
+mPCRselect is currently primarily designed for autosomal SNPs as it is not yet compatible with non-diploid chromosomes (e.g. sex chromosomes). Non-diploid and sex chromosomes should be removed before running the pipeline or via the `chr_file` parameter in the configuration file.  
+
 ## License  
 The script `make_fst_plots.R` is derived from from code written by Chenyang Li (2024) available at: https://github.com/ChenyangLi6/SNP-panel. Original and unmodified code are subject to copyright under the University of Southern California Research License 2.0 (USC-RL v2.0), whose terms are available in the [USC-RLv2.0.txt](licenses/USC-RLv2.0.txt) file.  
 
@@ -72,14 +74,14 @@ For hybridization capture bait design:
 * [BaitsTools](https://github.com/campanam/BaitsTools) v. 1.8.1 [15]  
 
 ## Pipeline Configuration  
-A standard local configuration profile that installs the required dependencies through Conda/Mamba is included in the `nextflow.config` file under the `conda` profile.  
+A standard local configuration profile that installs the required dependencies through Conda/Mamba is included in the `nextflow.config` file under the `conda` profile. The maximum number of processors used can be specified by the modifying the maxForks parameter (default = 32 in the `conda` profile).  
 
 A basic explanation of configuring the software parameters is available in the [tutorial](docs/TUTORIAL.Md).  
 
 Given the wide variety of computing architectures, we cannot provide detailed configuration settings for all software processes. Please consult your computing staff and the Nextflow documentation to generate custom profiles for your system.  
 
 ## Running the Pipeline  
-Enter `nextflow run ellieearmstrong/mPCRselect -r <version> -c <config_file>` to run the pipeline, where `version` is the installed mPCRselect release. Further details on running Nextflow pipelines are available in the official Nextflow documentation.  
+Enter `nextflow run ellieearmstrong/mPCRselect -r <version> -c <config_file> -profile conda` to run the pipeline, where `version` is the installed mPCRselect release. Further details on running Nextflow pipelines are available in the official Nextflow documentation.  
 
 ## References  
 1. Di Tommaso, P., Chatzou, M., Floden, E.W., Prieto Barja, P., Palumbo, E., Notredame, C. (2017) Nextflow enables reproducible computational workflows. *Nat Biotechnol*, __35__, 316–319. DOI: [10.1038/nbt.3820](https://www.nature.com/articles/nbt.3820).  

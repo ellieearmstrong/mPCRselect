@@ -2,6 +2,8 @@
 ### Version 0.3.1  
 Changed Tidyverse channel  
 Moved shebang line  
+Updated documentation  
+PCA plots are now labelled by population  
 
 ### Version 0.3.0  
 Added documentation  
