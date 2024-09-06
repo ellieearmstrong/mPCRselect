@@ -230,19 +230,9 @@ for(x in 1:(requested_snps/snp_interval)) {
       		matrix2[i] = 2
   		}
   	}
-  	if (all(matrix1 == 2)) {
-  		accuracy <- 0.5
-	}else if (all(matrix2 == 1)) {
-  		accuracy <- 0.5
-	}
-	else{
-  		actural_label <- matrix(c(rep(1, resamples), rep(2, resamples)), nrow = 2, ncol = resamples, byrow = TRUE)
-  		combined_matrix <- rbind(matrix1, matrix2)
- 		predicted_classes <- combined_matrix
-  		confusion_matrix<- confusionMatrix(table(predicted_classes, actural_label))
-  		accuracy <- confusion_matrix$overall["Accuracy"]
-	}
-	l <- 0
+  	results_table <- matrix(c(sum(matrix1 == 1),sum(matrix1 == 2),sum(matrix2 == 1), sum(matrix2==2)), nrow = 2, ncol = 2)
+    confusion_matrix <- confusionMatrix(as.table(results_table))
+	accuracy <- confusion_matrix$overall["Accuracy"]
   	l <- x
   	result[l,5] <- accuracy
 }
@@ -330,16 +320,12 @@ for(y in 1:(requested_snps/snp_interval)){
       			matrix2[i] = 2
   			}
   		}
-  
-  		actural_label <- matrix(c(rep(1, resamples), rep(2, resamples)), nrow = 2, ncol = resamples, byrow = TRUE)
-  		combined_matrix <- rbind(matrix1, matrix2)
-  		predicted_classes <- combined_matrix
-  		confusion_matrix<- confusionMatrix(table(predicted_classes, actural_label))
+  		results_table <- matrix(c(sum(matrix1 == 1),sum(matrix1 == 2),sum(matrix2 == 1), sum(matrix2==2)), nrow = 2, ncol = 2)
+        confusion_matrix <- confusionMatrix(as.table(results_table))
   		accuracy <- confusion_matrix$overall["Accuracy"]
   		sum = sum + accuracy
    	}
 	sum = sum/dcontrol
-   	l <- 0
   	l <- (requested_snps/snp_interval) + y
   	result[l,5] <- sum
 }

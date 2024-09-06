@@ -4,6 +4,7 @@ Changed Tidyverse channel
 Moved shebang line  
 Updated documentation  
 PCA plots are now labelled by population  
+Fixed bug in make_fst_plots.R that caused crash when no predictive value in random SNPs  
 
 ### Version 0.3.0  
 Added documentation  
