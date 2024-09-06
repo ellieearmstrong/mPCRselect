@@ -19,8 +19,8 @@
 
 # Set up arguments
 pca_args = commandArgs(trailingOnly=TRUE) # Get input arguments
-pca <- read.table(pca_args[0]) # PLINK2 eigenvec file
-pops <- read.csv(pca_args[1]) # Population assignment file
+pca <- read.table(pca_args[1]) # PLINK2 eigenvec file
+pops <- read.csv(pca_args[2]) # Population assignment file
 pop_list <- c()
 for (i in 1:length(pca$V1)) {if (pca$V1[i] %in% pops$Sample) {pop_list <- c(pop_list, pops$Population[i])} else {pop_list <- c(pop_list, 'NoPopAssignment')}} # Handling for samples in VCF without pop assignments
 eigenval <- read.table(gsub(".eigenvec",".eigenval", pca_args)) #PLINK2 eigenval file
