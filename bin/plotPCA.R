@@ -23,8 +23,8 @@ pca <- read.table(pca_args[1]) # PLINK2 eigenvec file
 pops <- read.csv(pca_args[2]) # Population assignment file
 pop_list <- c()
 for (i in 1:length(pca$V1)) {if (pca$V1[i] %in% pops$Sample) {pop_list <- c(pop_list, pops$Population[i])} else {pop_list <- c(pop_list, 'NoPopAssignment')}} # Handling for samples in VCF without pop assignments
-eigenval <- read.table(gsub(".eigenvec",".eigenval", pca_args)) #PLINK2 eigenval file
-total_variance <- sum(read.table(gsub(".eigenvec",".rel.diag", pca_args)))
+eigenval <- read.table(gsub(".eigenvec",".eigenval", pca_args[1])) #PLINK2 eigenval file
+total_variance <- sum(read.table(gsub(".eigenvec",".rel.diag", pca_args[1])))
 pc1_percent <- round((eigenval[1,]/total_variance)*100, digits = 2)
 pc2_percent <- round((eigenval[2,]/total_variance)*100, digits = 2)
 
