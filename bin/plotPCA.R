@@ -28,7 +28,7 @@ total_variance <- sum(read.table(gsub(".eigenvec",".rel.diag", pca_args[1])))
 pc1_percent <- round((eigenval[1,]/total_variance)*100, digits = 2)
 pc2_percent <- round((eigenval[2,]/total_variance)*100, digits = 2)
 
-png(file=gsub(".eigenvec", ".pca.png", pca_args), width = 1000, height = 1000)
+png(file=gsub(".eigenvec", ".pca.png", pca_args[1]), width = 1000, height = 1000)
 	pc1lab = paste("PC1: ", pc1_percent, "%", sep = "")
 	pc2lab = paste("PC2: ", pc2_percent, "%", sep = "")
 	poplevels <- length(levels(as.factor(pop_list)))
