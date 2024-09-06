@@ -32,7 +32,7 @@ png(file=gsub(".eigenvec", ".pca.png", pca_args[1]), width = 1000, height = 1000
 	pc1lab = paste("PC1: ", pc1_percent, "%", sep = "")
 	pc2lab = paste("PC2: ", pc2_percent, "%", sep = "")
 	poplevels <- length(levels(as.factor(pop_list)))
-	plot(pca$V2, pca$V3, col=as.factor(pop_list), pch=c(1:poplevels)[as.factor(pop_list)])
+	plot(pca$V2, pca$V3, xlab = pc1lab, ylab = pc2lab, col=as.factor(pop_list), pch=c(1:poplevels)[as.factor(pop_list)])
 	legend("bottom", legend=c(levels(as.factor(pop_list))), col=c(1:poplevels), pch=c(1:poplevels))
 dev.off()	
 
