@@ -7,7 +7,7 @@ University of Southern California
 Smithsonian Institution  
 
 ## Introduction  
-mPCRselect is a Nextflow [1] DSL2 pipeline for selecting and optimizing single-nucleotide polymorphisms (SNPs) for panels that reflect known population structure and identify individuals through minimized random match probability (RMP). Optionally, the pipeline can produce either massively multiplex polymerase chain reaction (PCR) primers or hybridization capture baits. Detailed descriptions of the pipeline processes and scripts are available in the [pipeline documentation](doc/pipeline_details.Md). A diagram of the complete pipeline is available [here](doc/mPCRselect.mmd). Please see the [tutorial](docs/TUTORIAL.Md) for instructions on how to configure and run the pipeline.  
+mPCRselect is a Nextflow [1] DSL2 pipeline for selecting and optimizing single-nucleotide polymorphisms (SNPs) for panels that reflect known population structure and identify individuals through minimized random match probability (RMP). Optionally, the pipeline can produce either massively multiplex polymerase chain reaction (PCR) primers or hybridization capture baits. Detailed descriptions of the pipeline processes and scripts are available in the [pipeline documentation](doc/pipeline_details.Md). A diagram of the complete pipeline is available [here](doc/mPCRselect.mmd). Please see the [tutorial](doc/TUTORIAL.Md) for instructions on how to configure and run the pipeline.  
 
 mPCRselect is currently primarily designed for autosomal SNPs as it is not yet compatible with non-diploid chromosomes (e.g. sex chromosomes). Non-diploid and sex chromosomes should be removed before running the pipeline or via the `chr_file` parameter in the configuration file.  
 
@@ -76,7 +76,7 @@ For hybridization capture bait design:
 ## Pipeline Configuration  
 A standard local configuration profile that installs the required dependencies through Conda/Mamba is included in the `nextflow.config` file under the `conda` profile. The maximum number of processors used can be specified by the modifying the maxForks parameter (default = 32 in the `conda` profile).  
 
-A basic explanation of configuring the software parameters is available in the [tutorial](docs/TUTORIAL.Md).  
+A basic explanation of configuring the software parameters is available in the [tutorial](doc/TUTORIAL.Md).  
 
 Given the wide variety of computing architectures, we cannot provide detailed configuration settings for all software processes. Please consult your computing staff and the Nextflow documentation to generate custom profiles for your system.  
 
