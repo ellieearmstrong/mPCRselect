@@ -83,6 +83,12 @@ Given the wide variety of computing architectures, we cannot provide detailed co
 ## Running the Pipeline  
 Enter `nextflow run ellieearmstrong/mPCRselect -r <version> -c <config_file> -profile conda` to run the pipeline, where `version` is the installed mPCRselect release. Further details on running Nextflow pipelines are available in the official Nextflow documentation.  
 
+## Running the Example Dataset  
+A small example dataset is available in [Dryad](https://dx.doi.org/10.5061/dryad.0k6djhb96). This dataset can be run using the defaults in the `nextflow.config` file in the mPCRselect repository.  
+1. Download and unzip the data.  
+2. Rename the unzipped data directory to `RawData`.  
+3. Run the pipeline `nextflow run ellieearmstrong/mPCRselect -r main -profile conda`.  
+
 ## References  
 1. Di Tommaso, P., Chatzou, M., Floden, E.W., Prieto Barja, P., Palumbo, E., Notredame, C. (2017) Nextflow enables reproducible computational workflows. *Nat Biotechnol*, __35__, 316–319. DOI: [10.1038/nbt.3820](https://www.nature.com/articles/nbt.3820).  
 2. Ruby: A Programmer's Best Friend (2024) http://www.ruby-lang.org. Accessed 7 May 2024.  

@@ -45,6 +45,8 @@ mPCRselect can automatically remove unwanted samples from the original provided 
 
 3b. In a text editor, modify your configuration file for your analysis. Most run parameter default values will suffice for most analyses, but the file path names for the input files MUST be modified and specified. For file path shortcuts (such as the $launchDir variable), please consult the Nextflow documentation. Parameters are described below:
 
+*NB: The default `nextflow.config` file will run the [Dryad example dataset](https://dx.doi.org/10.5061/dryad.0k6djhb96) without modification and can serve as example for setting up a run.*  
+
 *Input parameters that MUST be modified in the configuration file*  
 `vcf`: Path to the gzipped input VCF.  
 `populations`: Path to the population-assignment CSV.  
