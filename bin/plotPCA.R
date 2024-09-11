@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-# plotPCA.R from mPCRselect version 0.3.1
+# plotPCA.R from mPCRselect version 0.3.2
 # Michael G. Campana, 2024
 # Smithsonian Institution
 

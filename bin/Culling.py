@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Culling.py from mPCRselect version 0.3.1
+# Culling.py from mPCRselect version 0.3.2
 # Katherine A. Solari, Michael G. Campana, 2022-2024
 # Stanford University and Smithsonian Institution
 

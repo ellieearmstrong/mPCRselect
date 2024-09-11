@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# vcf_2_ngsprimperplex.rb from mPCRselect version 0.3.1
+# vcf_2_ngsprimperplex.rb from mPCRselect version 0.3.2
 # Michael G. Campana, 2024
 # Smithsonian Institution
 

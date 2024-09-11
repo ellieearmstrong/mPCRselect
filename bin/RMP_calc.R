@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-# RMP_calc.R from mPCRselect version 0.3.1
+# RMP_calc.R from mPCRselect version 0.3.2
 # Ellie E. Armstrong and Michael G. Campana, 2024
 # Stanford University and Smithsonian Institution
 

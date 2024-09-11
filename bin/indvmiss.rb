@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# indvmiss.rb from mPCRselect version 0.3.1
+# indvmiss.rb from mPCRselect version 0.3.2
 # Michael G. Campana, 2022-2024
 # Smithsonian Institution
 

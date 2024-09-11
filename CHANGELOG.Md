@@ -1,4 +1,8 @@
 # CHANGELOG  
+### Version 0.3.2  
+Added revised get_PCA_snps.rb to bin directory  
+Fixed column bug in get_PCA_snps.rb from mPCRselect v.0.2.0  
+
 ### Version 0.3.1  
 Changed Tidyverse channel  
 Moved shebang line  
