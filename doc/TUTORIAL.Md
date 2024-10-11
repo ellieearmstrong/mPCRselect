@@ -6,7 +6,7 @@ University of Southern California
 Smithsonian Institution  
 
 1. Prepare required input files  
-mPCRselect's primary input is a multi-sample variant call format (VCF) file of genotypes, such as that produced by BCFtools mpileup/call [1] or the Genome Analysis Toolkit [2] GenotypeGVCFs command. Please ensure that chromosome names are compatible with [PLINK 2](https://www.cog-genomics.org/plink/2.0/) [3] before running mPCRselect.  
+mPCRselect's primary input is a multi-sample variant call format (VCF) file of genotypes, such as that produced by BCFtools mpileup/call [1] or the Genome Analysis Toolkit [2] GenotypeGVCFs command. Please ensure that chromosome names are compatible with [PLINK 2](https://www.cog-genomics.org/plink/2.0/) [3] before running mPCRselect. Please do not include underscores (_) or colons (:) in your chromosome names.  
 
 mPCRselect also requires a two-column headered comma-separated values (CSV) format file assigning individuals in the VCF to populations, e.g.:
 
@@ -22,6 +22,7 @@ Sample,Population
 
 2. Prepare optional input files  
 mPCRselect can perform optional filters using the following files:  
+
 2a. Sample list  
 mPCRselect can automatically remove unwanted samples from the original provided VCF using a sample list. This is a simple headerless text file listing the samples to remove, e.g.:  
 
@@ -127,6 +128,7 @@ It is difficult to predict the number of SNPs that will successfully yield infor
 
 6c. Run the `RMP_calc.R` script on the subselected file:  
 `Rscript RMP_calc.R <subselected file>`  
+
 ## References  
 1. Danecek, P., Bonfield, J.K., Liddle, J., Marshall, J., Ohan, V., Pollard, M.O., Whitwham, A., Keane, T., McCarthy, S.A., Davies, R.M., Li, H. (2021) Twelve years of SAMtools and BCFtools. *GigaScience*, __10__, giab008. DOI: [10.1093/gigascience/giab008](https://academic.oup.com/gigascience/article/10/2/giab008/6137722).  
 2.  McKenna, A., Hanna, M., Banks, E., Sivachenko, A., Cibulskis, K., Kernytsky, A., Garimella, K., Altshuler, D., Gabriel, S., Daly, M., DePristo, M.A. (2010) The Genome Analysis Toolkit: a MapReduce framework for analyzing next-generation DNA sequencing data. *Genome Res*, __20__, 1297-1303. DOI: [10.1101/gr.107524.110](https://genome.cshlp.org/content/20/9/1297.abstract).  
