@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-/* mPCRselect version 0.3.2
+/* mPCRselect version 0.3.3
 Ellie E. Armstrong, Katherine A. Solari, Michael G. Campana, 2022-2024
 Stanford University, University of Southern California, and Smithsonian Institution
 
@@ -419,7 +419,7 @@ process piFinalSNPs {
 	"""
 	for i in *pi.vcf.gz; do bgzip -d \$i; gzip \${i%.gz}; done
 	input=`echo $filelist`
-	get_best_snps.rb ${params.maxFstSNPs} \$input > best_snps.txt
+	get_best_snps.rb ${params.maxPiSNPs} \$input > best_snps.txt
 	vcftools --gzvcf $thin_vcf --positions best_snps.txt --recode -c | bgzip > ${thin_vcf.simpleName}.finPi.vcf.gz
 	vcftools --gzvcf ${thin_vcf.simpleName}.finPi.vcf.gz --freq --out ${thin_vcf.simpleName}.finPi
 	tail -n+2 ${thin_vcf.simpleName}.finPi.frq > ${thin_vcf.simpleName}.finPi.nohead.frq
