@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-/* mPCRselect version 0.3.3
+/* mPCRselect version 0.3.4
 Ellie E. Armstrong, Katherine A. Solari, Michael G. Campana, 2022-2024
 Stanford University, University of Southern California, and Smithsonian Institution
 

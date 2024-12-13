@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# get_best_snps.rb from mPCRselect version 0.3.2
+# get_best_snps.rb from mPCRselect version 0.3.4
 # Michael G. Campana, 2022-2024
 # Smithsonian Institution
 
@@ -40,9 +40,11 @@ for infile in ARGV[1..-1]
 			if line[0].chr != '#'
 				line_arr = line.split
 				if line_arr.size == 1 # Determine if input is VCF or site list
-					site = line_arr[0].split("_")[0].gsub("\"","").gsub(":","\t") # Use PLINK snp ID and remove SNP call for site lists
+					# If site list, use PLINK snp ID and remove SNP call for site lists
+					site_arr = line_arr[0].gsub("\"","").split(":") # Split on site marker splitter
+					site = site_arr[0] + "\t" + site_arr[1].split("_")[0] # Remove trailing SNP call
 				else
-					site = line_arr[2].split("_")[0].gsub(":","\t") # Use PLINK snp ID and remove SNP call for VCFs
+					site = line_arr[2].gsub(":","\t") # Use PLINK snp ID for VCFs
 				end
 				if @snps.keys.include?(site)
 					@snps[site]+=1

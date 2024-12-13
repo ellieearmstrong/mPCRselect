@@ -1,4 +1,7 @@
 # CHANGELOG  
+### Version 0.3.4  
+Made get_best_snps.rb compatible with underscores in contig names  
+
 ### Version 0.3.3  
 Fixed bug in piFinalSNPs that used the maxFstSNPs rather than the maxPiSNPs parameter  
 
