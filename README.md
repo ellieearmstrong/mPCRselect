@@ -11,13 +11,17 @@ mPCRselect is a Nextflow [1] DSL2 pipeline for selecting and optimizing single-n
 
 mPCRselect is currently primarily designed for autosomal SNPs as it is not yet compatible with non-diploid chromosomes (e.g. sex chromosomes). Non-diploid and sex chromosomes should be removed before running the pipeline or via the `chr_file` parameter in the configuration file.  
 
+## Citation  
+Please cite:  
+Armstrong, E.E., Li, C., Campana, M.G., Ferrari, T., Kelley, J.L., Petrov, D.A., Solari, K.A., Mooney, J.A. (2024) A pipeline and recommendations for population and individual diagnostic SNP selection in non-model species. *Mol Ecol Resour*, e14048. DOI: [10.1111/1755-0998.14048](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14048).  
+
 ## License  
 The script `make_fst_plots.R` is derived from from code written by Chenyang Li (2024) available at: https://github.com/ChenyangLi6/SNP-panel. Original and unmodified code are subject to copyright under the University of Southern California Research License 2.0 (USC-RL v2.0), whose terms are available in the [USC-RLv2.0.txt](licenses/USC-RLv2.0.txt) file.  
 
 ![image](https://user-images.githubusercontent.com/19614608/118704084-bf02f280-b7e4-11eb-8d59-0ce648313d9e.png)  
 With the exception of the copyrighted original and unmodified code in `make_fst_plots.R`, to the extent possible under law, the Smithsonian Institution and Stanford University have waived all copyright and related or neighboring rights to mPCRselect; this work is published from the United States. Please see the terms in the [CC0.txt](licenses/CC0.txt) file.    
 
-## Installation:  
+## Installation  
 All [dependencies](#dependencies) can be installed manually following the instructions included in their external documentation. While Nextflow and the optional dependencies must be installed manually, the remaining dependencies can be installed using Conda/Mamba through the 'conda' profile included in the default mPCRselect configuration.  
 
 Primary pipeline installation:  
