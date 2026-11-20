@@ -1,7 +1,7 @@
 # mPCRselect  
 Pipeline for selecting ancestry and individual identification informative SNPs from variant call files (VCF).  
 
-__Ellie E. Armstrong, Chenyang Li, Katherine A. Solari, Jazlyn A. Mooney, Michael G. Campana, 2022-2024__  
+__Ellie E. Armstrong, Chenyang Li, Katherine A. Solari, Jazlyn A. Mooney, Michael G. Campana, 2022-2026__  
 Stanford University  
 University of Southern California  
 Smithsonian Institution  
@@ -13,7 +13,7 @@ mPCRselect is currently primarily designed for autosomal SNPs as it is not yet c
 
 ## Citation  
 Please cite:  
-Armstrong, E.E., Li, C., Campana, M.G., Ferrari, T., Kelley, J.L., Petrov, D.A., Solari, K.A., Mooney, J.A. (2024) A pipeline and recommendations for population and individual diagnostic SNP selection in non-model species. *Mol Ecol Resour*, e14048. DOI: [10.1111/1755-0998.14048](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14048).  
+Armstrong, E.E., Li, C., Campana, M.G., Ferrari, T., Kelley, J.L., Petrov, D.A., Solari, K.A., Mooney, J.A. (2025) A pipeline and recommendations for population and individual diagnostic SNP selection in non-model species. *Mol Ecol Resour*, 25: e14048. DOI: [10.1111/1755-0998.14048](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14048).  
 
 ## License  
 The script `make_fst_plots.R` is derived from from code written by Chenyang Li (2024) available at: https://github.com/ChenyangLi6/SNP-panel. Original and unmodified code are subject to copyright under the University of Southern California Research License 2.0 (USC-RL v2.0), whose terms are available in the [USC-RLv2.0.txt](licenses/USC-RLv2.0.txt) file.  
@@ -36,6 +36,9 @@ Install `NGS_primerplex.py` script:
 4. Modify the shebang line of the `NGS_primerplex.py` script: Change the first line from `#!/usr/bin/python3` to `#!/usr/bin/env python3` 
 5. Move the `NGS_primerplex.py` script to a directory in your PATH variable.  
 
+Install multiplex wormhole:  
+1. Build and install multiplex wormhole following the instructions [here](https://github.com/mhallerud/multiplex_wormhole).  
+
 Install BaitsTools:  
 1. Install Ruby and RubyGems: See installation instructions [here](http://www.ruby-lang.org).  
 2. Build and install the BaitsTools gem following the instructions [here](https://github.com/campanam/BaitsTools).  
@@ -44,7 +47,7 @@ Install BaitsTools:
 mPCRselect depends on the following software to perform the SNP selection and optimization pipeline:  
 
 Programming Languages:  
-* [Nextflow](https://www.nextflow.io/) v. >= 23.10.0 [1]  
+* [Nextflow](https://www.nextflow.io/) v. 26.04.06 [1]  
 * [Ruby](http://www.ruby-lang.org) v. >= 3.2.2 [2]  
 * [R](https://www.r-project.org/) v. >= 4.2.3 [3]  
 * [Python](https://www.python.org/) v. >= 3.0 [4]  
@@ -69,10 +72,13 @@ Required R Packages:
 ## Optional Dependencies:  
 The following packages are optional, but are required for multiplex primer and/or hybridization capture bait design.  
 
-For multiplex primer design:  
+For multiplex primer design using NGS-PrimerPlex:  
 * `NGS_primerplex.py` from [NGS-PrimerPlex](https://github.com/aakechin/NGS-PrimerPlex) [12]  
 * [BWA](http://bio-bwa.sourceforge.net/) v. 0.7.17 [13,14]
 * NGS-PrimerPlex python dependencies installed using the NGS-PrimerPlex `install_for_linux.sh` script  
+
+For multiplex primer design using multiplex wormhole:  
+* [multiplex wormhole](https://github.com/mhallerud/multiplex_wormhole) v. 1.1.0  
 
 For hybridization capture bait design:  
 * [BaitsTools](https://github.com/campanam/BaitsTools) v. 1.8.1 [15]  

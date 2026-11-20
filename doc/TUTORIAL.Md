@@ -1,6 +1,6 @@
 # mPCRselect Pipeline Tutorial  
 
-__Ellie E. Armstrong, Chenyang Li, Katherine A. Solari, Jazlyn A. Mooney, Michael G. Campana, 2022-2024__  
+__Ellie E. Armstrong, Chenyang Li, Katherine A. Solari, Jazlyn A. Mooney, Michael G. Campana, 2022-2026__  
 Stanford University  
 University of Southern California  
 Smithsonian Institution  
@@ -79,10 +79,10 @@ thin = 100000 // Distance to randomly thin for LD avoidance. Set to "NULL" to by
 `FstSNPInterval`: Interval at which to plot evaluated SNPs for Fst greedy algorithm. Default is `50`.  
 	
 *NGS-PrimerPlex parameters*  
-`makePrimers`: Switch controlling whether to make mPCR primers (O = no, 1 = yes). Default is `0`.  
-`primerSeq1`: NGS-PrimerPlex forward adapter construct sequence for NGS. Default is `'TCGTCGGCAGCGTCAGATGTGTATAAGAGACAG'`.  
-`primerSeq2`: NGS-PrimerPlex reverse adapter construct sequence for NGS. Default is `'GTCTCGTGGGCTCGGAGATGTGTATAAGAGACAG'`.  
-`NPP_params`: Parameter string for NGS-PrimerPlex. See [NGS-PrimerPlex documentation](https://github.com/aakechin/NGS-PrimerPlex) for details. Default is `'-minampllen 26 -optampllen 50 -maxampllen 120 -maxprimerlen 26 -minprimerlen 18 -blast -skip -primernum1 25 -tries 500'`.  
+`makePrimersNPP`: Switch controlling whether to make mPCR primers using NGS-PrimerPlex (O = no, 1 = yes). Default is `0`.  
+`makePrimersMW`: Switch controlling whether to make mPCR primers using multiplex wormhole (O = no, 1 = yes). Default is `1`.
+`NPP_params`: Parameter string for NGS-PrimerPlex. See [NGS-PrimerPlex documentation](https://github.com/aakechin/NGS-PrimerPlex) for details. Default is `'-minampllen 26 -optampllen 50 -maxampllen 120 -maxprimerlen 26 -minprimerlen 18 -blast -skip -primernum1 25 -tries 500 -ad1 "TCGTCGGCAGCGTCAGATGTGTATAAGAGACAG" -ad2 "GTCTCGTGGGCTCGGAGATGTGTATAAGAGACAG"'`.  
+`MW_params`: Parameter string for multiplex wormhole. See [multiplex wormhole documentation](https://github.com/mhallerud/multiplex_wormhole/blob/main/docs/1_BatchPrimerDesign.md) for details. Default is `'--primer3-settings \'{"SEQUENCE_OVERHANG_LEFT": "TCGTCGGCAGCGTCAGATGTGTATAAGAGACAG", "SEQUENCE_OVERHANG_RIGHT": "GTCTCGTGGGCTCGGAGATGTGTATAAGAGACAG"}\''`.  
 	
 *BaitsTools parameters*  
 `makeBaits`: Switch controlling whether to make capture baits (O = no, 1 = yes). Default is `0`.  
@@ -115,7 +115,7 @@ Within the specified output directory, mPCRselect will generate subdirectories c
 `15_FstFinalSNPs`: VCF of the final selected Fst SNPs.  
 `16_PiFinalSNPs`: VCF of the final selected pi SNPs. There will also be a text file ('.RMP.txt') giving the highest and lowest calculated RMP values and the pi site allele frequencies as calculated by VCFtools.  
 `17_Fst_Pi_SNPs`: VCF of the concatenated Fst and pi SNPs.  
-`18_mPCRPrimers`: Output of NGS-PrimerPlex. Directory will be omitted if primers are not made.  
+`18_mPCRPrimers`: Output of NGS-PrimerPlex and/or multiplex wormhole. Directory will be omitted if primers are not made.  
 `19_Baits`: Output of BaitsTools. Directory will be omitted if baits are not made.  
 `20_plinkPCA`: PLINK 2 PCA output and plots for the primary stages of the pipeline.  
 
@@ -131,7 +131,7 @@ It is difficult to predict the number of SNPs that will successfully yield infor
 
 ## References  
 1. Danecek, P., Bonfield, J.K., Liddle, J., Marshall, J., Ohan, V., Pollard, M.O., Whitwham, A., Keane, T., McCarthy, S.A., Davies, R.M., Li, H. (2021) Twelve years of SAMtools and BCFtools. *GigaScience*, __10__, giab008. DOI: [10.1093/gigascience/giab008](https://academic.oup.com/gigascience/article/10/2/giab008/6137722).  
-2.  McKenna, A., Hanna, M., Banks, E., Sivachenko, A., Cibulskis, K., Kernytsky, A., Garimella, K., Altshuler, D., Gabriel, S., Daly, M., DePristo, M.A. (2010) The Genome Analysis Toolkit: a MapReduce framework for analyzing next-generation DNA sequencing data. *Genome Res*, __20__, 1297-1303. DOI: [10.1101/gr.107524.110](https://genome.cshlp.org/content/20/9/1297.abstract).  
+2. McKenna, A., Hanna, M., Banks, E., Sivachenko, A., Cibulskis, K., Kernytsky, A., Garimella, K., Altshuler, D., Gabriel, S., Daly, M., DePristo, M.A. (2010) The Genome Analysis Toolkit: a MapReduce framework for analyzing next-generation DNA sequencing data. *Genome Res*, __20__, 1297-1303. DOI: [10.1101/gr.107524.110](https://genome.cshlp.org/content/20/9/1297.abstract).  
 3. Chang, C.C., Chow, C.C., Tellier, L.C.A.M., Vattikuti, S., Purcell, S.M., Lee, J.J. (2015) Second-generation PLINK: rising to the challenge of larger and richer datasets. *GigaScience*, __4__, s13742-015-0047-8. DOI: [10.1186/s13742-015-0047-8](https://doi.org/10.1186/s13742-015-0047-8).  
 4. Danecek, P., Auton, A., Abecasis, G., Albers, C.A., Banks, E., DePristo, M.A., Handsaker, R.E., Lunter, G., Marth, G.T., Sherry, S.T., McVean, G., Durbin, R. (2011) The variant call format and VCFtools. *Bioinformatics*, __27__, 2156–2158. DOI: [10.1093/bioinformatics/btr330](https://academic.oup.com/bioinformatics/article/27/15/2156/402296).  
 6. Wickham, H., Averick, M., Bryan, J., Chang, W., D'Agostino McGowan, L., François, R., Grolemund, G., Hayes, A., Henry, L., Hester, J., Kuhn, M., Pedersen, T.L., Miller, E., Bache, S.M., Müller, K., Ooms, J., Robinson, D., Seidel, D.P., Spinu, V., Takahashi, K., Vaughan, D., Wilke, C., Woo, K. Yutani, H. (2019). Welcome to the Tidyverse. *J Open Source Softw*, __4__, 1686. DOI: [10.21105/joss.01686](https://joss.theoj.org/papers/10.21105/joss.01686).  

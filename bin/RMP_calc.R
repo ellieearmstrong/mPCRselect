@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
-# RMP_calc.R from mPCRselect version 0.3.2
-# Ellie E. Armstrong and Michael G. Campana, 2024
+# RMP_calc.R from mPCRselect version 0.4.0
+# Ellie E. Armstrong and Michael G. Campana, 2024-2026
 # Stanford University and Smithsonian Institution
 
 # CC0: To the extent possible under law, the Smithsonian Institution and Stanford 
@@ -12,8 +12,9 @@
 
 # We politely request that this work be cited as:
 # Armstrong EE, Li C, Campana MG, Ferrari T, Kelley JL, Petrov DA, Solari KA, Mooney JA.
-# In prep. Recommendations for population and individual diagnostic SNP selection in non-
-# model species.
+# 2025. A pipeline and recommendations for population and individual diagnostic SNP 
+# selection in non-model species. Mol. Ecol. Resour. 25: e14048. 
+# doi: 10.1111/1755-0998.14048.
 
 ###Code for calculating RMP from allele frequencies
 library(tidyr) # Part of tidyverse

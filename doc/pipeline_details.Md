@@ -1,6 +1,6 @@
 # mPCRselect Pipeline Details  
 
-__Ellie E. Armstrong, Chenyang Li, Katherine A. Solari, Jazlyn A. Mooney, Michael G. Campana, 2022-2024__  
+__Ellie E. Armstrong, Chenyang Li, Katherine A. Solari, Jazlyn A. Mooney, Michael G. Campana, 2022-2026__  
 Stanford University  
 University of Southern California  
 Smithsonian Institution  
@@ -51,11 +51,13 @@ The following describes the mPCRselect pipeline processes in the order in which 
 18. `indexRef`: The `indexRef` process uses BWA [5,6] index to index the reference genome for downstream NGS-PrimerPlex [7] primer design.  
 
 19. `makePrimers`: The `makePrimers` process uses the custom Ruby script `vcf_2_ngsprimerplex.rb` to convert the final selected site VCF to NGS-PrimerPlex input format. It then uses the `NGS_primerplex.py` script from NGS-PrimerPlex to generate multiple PCR primers.  
-`vcf_2_ngsprimerplex.rb` is executed: `vcf_2_ngsprimerplex.rb <input VCF>`
+`vcf_2_ngsprimerplex.rb` is executed: `vcf_2_ngsprimerplex.rb <input VCF>`  
 
-20. `makeBaits`: The `makeBaits` process uses BaitsTools [8] vcf2baits to generate bait sequences from the final selected site VCF.  
+20. `mWormhole`: The `mWormhole` process uses BEDtools and the custom Ruby script `make_wormhole.rb` to extract 401 bp of flanking sequence (200 bp each side) of the selected SNPs and convert them to multiplex wormhole input format. Sequences for which the full 401 bp extracted region are not available (i.e. by running off the end of the chromosome) are discarded. It then uses multiplex wormhole to build multiplex PCR primers.  
 
-21. `plinkPCA`: The `plinkPCA` process performs principal component analysis (PCA) on the original VCF, the filtered VCF, the final Fst VCF, the final pi VCF, and final concatenated Fst and pi VCF to ensure that the SNP panel captured the observed variability. First, the process uses VCFtools to retain only biallelic sites. Next, PCA is performed using PLINK 2. Finally, PCAs are plotted using the custom R script `plotPCA.R`.  
+21. `makeBaits`: The `makeBaits` process uses BaitsTools [8] vcf2baits to generate bait sequences from the final selected site VCF.  
+
+22. `plinkPCA`: The `plinkPCA` process performs principal component analysis (PCA) on the original VCF, the filtered VCF, the final Fst VCF, the final pi VCF, and final concatenated Fst and pi VCF to ensure that the SNP panel captured the observed variability. First, the process uses VCFtools to retain only biallelic sites. Next, PCA is performed using PLINK 2. Finally, PCAs are plotted using the custom R script `plotPCA.R`.  
 `plotPCA.R` is executed: `plotPCA.R <PLINK 2 eigenvec file>`  
 
 ## References  
@@ -67,7 +69,3 @@ The following describes the mPCRselect pipeline processes in the order in which 
 6. Li, H., Durbin, R. (2010) Fast and accurate long-read alignment with Burrows-Wheeler transform. *Bioinformatics*, __26__, 589-595. DOI: [10.1093/bioinformatics/btp698](https://doi.org/10.1093/bioinformatics/btp698).  
 7. Kechin, A., Borobova, V., Boyarskikh, U., Khrapov, E., Subbotin, S., Filipenko, M. (2020) NGS-PrimerPlex: high-throughput primer design for multiplex polymerase chain reactions. *PLoS Comput Biol*, __16__, e1008468. DOI: [10.1371/journal.pcbi.1008468](https://doi.org/10.1371/journal.pcbi.1008468).  
 8. Campana, M.G. (2018) BaitsTools: software for hybridization capture bait design. *Mol Ecol Resour*, __18__, 356-361. DOI: [10.1111/1755-0998.12721](https://doi.org/10.1111/1755-0998.12721).  
-
-
-
-

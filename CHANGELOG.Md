@@ -1,4 +1,9 @@
 # CHANGELOG  
+### Version in 0.4.0  
+Added compatibility with multiplex wormhole  
+Removed primerSeq1 and primerSeq2 parameters  
+Updated to syntax-parser v2  
+
 ### Version 0.3.4  
 Made get_best_snps.rb compatible with underscores in contig names  
 

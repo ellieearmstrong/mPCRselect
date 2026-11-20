@@ -29,6 +29,7 @@ process removeSamples {
 	path "${raw_vcf.simpleName}.smp.vcf.gz", emit: vcf
 	path "${raw_vcf.simpleName}.smp.log"
 	
+	script:
 	"""
 	vcftools --gzvcf $raw_vcf --remove $samples --recode -c | gzip > ${raw_vcf.simpleName}.smp.vcf.gz
 	cp .command.log ${raw_vcf.simpleName}.smp.log
@@ -78,6 +79,7 @@ process removeSingletons {
 	path "${gq_vcf.simpleName}.singletons"
 	path "${gq_vcf.simpleName}.sng.log"
 	
+	script:
 	"""
 	vcftools --gzvcf $gq_vcf --singletons --out ${gq_vcf.simpleName}
 	vcftools --gzvcf $gq_vcf --exclude-positions ${gq_vcf.simpleName}.singletons --recode -c |  gzip > ${gq_vcf.simpleName}.sng.vcf.gz
@@ -161,6 +163,7 @@ process filterMappability {
 	path "${cull_vcf.simpleName}.map.vcf.gz", emit: vcf
 	path "${cull_vcf.simpleName}.map.log"
 	
+	script:
 	"""
 	bedtools sort -i $cull_vcf -header > cull_sort.vcf
 	bedtools sort -i $map_bed -header > map_sort.bed
@@ -185,6 +188,7 @@ process filterSites {
 	path "${map_vcf.simpleName}.site.vcf.gz", emit: vcf
 	path "${map_vcf.simpleName}.site.log"
 	
+	script:
 	"""
 	vcftools --gzvcf $map_vcf --remove-filtered-geno-all --remove-indels --min-alleles 2 --max-alleles 2 --max-missing ${params.siteMissing} --recode -c | gzip > ${map_vcf.simpleName}.site.vcf.gz
 	cp .command.log ${map_vcf.simpleName}.site.log
@@ -207,6 +211,7 @@ process filterChr {
 	path "${site_vcf.simpleName}.chr.vcf.gz", emit: vcf
 	path "${site_vcf.simpleName}.chr.log"
 	
+	script:
 	"""
 	chr_line=`echo '--chr '`; chr_line+=`awk 1 ORS=' --chr ' ${chrs}`; chr_line=`echo \${chr_line% --chr }` # Make into a --chr command-list > ${site_vcf.simpleName}.site.log
 	vcftools --gzvcf $site_vcf --recode \$chr_line -c | gzip > ${site_vcf.simpleName}.chr.vcf.gz
@@ -267,12 +272,12 @@ process plinkLD {
 		cp .command.log ${thin_vcf.simpleName}.pruned.log
 		"""
 	else
-	"""
-	plink2 --vcf $thin_vcf --maf ${params.minMAF} -indep-pairwise ${params.plinkLD_indep_pairwise} --bad-ld --allow-extra-chr --chr-set ${params.haploidN} --set-all-var-ids '@:#' --make-bed --out tmp
-	plink2 --bfile tmp --extract tmp.prune.in --make-bed --allow-extra-chr --chr-set ${params.haploidN} --export vcf-4.2 --out ${thin_vcf.simpleName}.pruned
-	gzip ${thin_vcf.simpleName}.pruned.vcf
-	cp .command.log ${thin_vcf.simpleName}.pruned.log
-	"""
+		"""
+		plink2 --vcf $thin_vcf --maf ${params.minMAF} -indep-pairwise ${params.plinkLD_indep_pairwise} --bad-ld --allow-extra-chr --chr-set ${params.haploidN} --set-all-var-ids '@:#' --make-bed --out tmp
+		plink2 --bfile tmp --extract tmp.prune.in --make-bed --allow-extra-chr --chr-set ${params.haploidN} --export vcf-4.2 --out ${thin_vcf.simpleName}.pruned
+		gzip ${thin_vcf.simpleName}.pruned.vcf
+		cp .command.log ${thin_vcf.simpleName}.pruned.log
+		"""
 	
 }
 
@@ -292,12 +297,10 @@ process splitPopulations {
 	path "${thin_vcf.simpleName}_${population}.log"
 	
 	script:
-	samplelist = ""
-	for (i in samples) {
-		samplelist = samplelist + " --indv " + i
-	}
+	samplelist = "--indv "
+	samplelist = samplelist + samples.join(" --indv ")
 	"""
-	vcftools --gzvcf $thin_vcf --recode${samplelist} -c | gzip > ${thin_vcf.simpleName}_${population}.vcf.gz
+	vcftools --gzvcf $thin_vcf --recode ${samplelist} -c | gzip > ${thin_vcf.simpleName}_${population}.vcf.gz
 	plink2 --vcf ${thin_vcf.simpleName}_${population}.vcf.gz --allow-extra-chr --chr-set ${params.haploidN} --export A --out ${thin_vcf.simpleName}_${population}
 	cp .command.log ${thin_vcf.simpleName}_${population}.log
 	"""
@@ -317,6 +320,7 @@ process optimizePi {
 	path "${pop_vcf.simpleName}.pi.vcf.gz", emit: vcf
 	path "${pop_vcf.simpleName}.pi.log"
 	
+	script:
 	"""
 	vcftools --gzvcf $pop_vcf --site-pi --out ${pop_vcf.simpleName}
 	get_pi_sites.rb ${pop_vcf.simpleName}.sites.pi ${params.minPi} ${params.maxPiSNPs} ${params.maxPiPC} > pi_sites.txt
@@ -342,6 +346,7 @@ process fstSNPs {
 	path "${thin_vcf.simpleName}.fst.vcf.gz", emit: vcf
 	path "${thin_vcf.simpleName}.fst.log"
 	
+	script:
 	"""
 	split_pops.rb $populations
 	popline=''
@@ -365,6 +370,7 @@ process makeFstPlots {
 	path "${pop1_raw.simpleName}_${pop2_raw.simpleName}_rep${rep}*"
 	path "${pop1_raw.simpleName}_${pop2_raw.simpleName}_rep${rep}.highFst.csv", emit: fst_csv
 	
+	script:
 	"""
 	#!/usr/bin/env bash
 	outstem=${pop1_raw.simpleName}_${pop2_raw.simpleName}_rep${rep}
@@ -444,6 +450,7 @@ process concatFinalSNPs {
 	path "${fst_snps.simpleName}.fst_pi.vcf.gz", emit: vcf
 	path "${fst_snps.simpleName}.fst_pi.log"
 	
+	script:
 	"""
 	bcftools index $fst_snps
 	bcftools index $pi_snps
@@ -464,6 +471,7 @@ process indexRef {
 	output:
 	path "$refseq.*"
 	
+	script:
 	"""
 	bwa index $refseq
 	"""
@@ -484,10 +492,38 @@ process makePrimers {
 	output:
 	path "${fin_snps.simpleName}.npp.txt"
 	
-	
+	script:
 	"""
 	vcf_2_ngsprimerplex.rb $fin_snps > ${fin_snps.simpleName}.npp.txt
-	NGS_primerplex.py -regions ${fin_snps.simpleName}.npp.txt -ref $refseq -ad1 ${params.primerSeq1} -ad2 ${params.primerSeq2} -run ${fin_snps.simpleName} ${params.NPP_params}
+	NGS_primerplex.py -regions ${fin_snps.simpleName}.npp.txt -ref $refseq -run ${fin_snps.simpleName} ${params.NPP_params}
+	"""
+
+}
+
+process mWormhole {
+
+	// Make primer sets from selected SNPs using multiplex wormhole
+	
+	publishDir "$params.outdir/18_mPCRPrimers", mode: "copy"
+	
+	input:
+	path(fin_snps)
+	path(refseq)
+	val(slop)
+	
+	output:
+	path "MultiplexWormhole"
+	
+	script:
+	"""
+	#!/usr/bin/env bash
+	samtools faidx ${refseq}
+	vcf_2_bed.rb $fin_snps > tmp.bed
+	bedtools slop -i tmp.bed -g ${refseq}.fai -b ${slop} > slop.bed # Slop adjusts coordinates for SNP going off name of contig, which could be a problem
+	bedtools getfasta -tab -fi ${refseq} -bed slop.bed > seqs.tsv
+	make_wormhole.rb seqs.tsv ${slop} > targets.csv
+	total=`wc -l targets.csv | cut -f1 -d ' '`
+	multiplex-wormhole -t targets.csv -n \$total -o MultiplexWormhole --threads ${task.cpus} ${params.MW_params}
 	"""
 
 }
@@ -505,6 +541,7 @@ process makeBaits {
 	output:
 	path "${fin_snps.simpleName}*"
 	
+	script:
 	"""
 	baitstools vcf2baits -i $fin_snps -r $refseq -e -o ${fin_snps.simpleName} ${params.baitsparams}
 	"""
@@ -529,6 +566,7 @@ process plinkPCA {
 	path 'plink2.pca.log'
 	path '*.pca.png'
 	
+	script:
 	"""
 	#!/usr/bin/env bash
 	for vcf in *vcf.gz; do
@@ -575,10 +613,11 @@ workflow {
 		fstFinalSNPs(fst_selected_snps_ch, plinkLD.out.vcf)
 		piFinalSNPs(optimizePi.out.vcf.collect(), plinkLD.out.vcf)
 		concatFinalSNPs(fstFinalSNPs.out.vcf, piFinalSNPs.out.vcf)
-		if (params.makePrimers == 1) {
+		if (params.makePrimersNPP == 1) {
 			indexRef(params.refseq)
-			makePrimers(concatFinalSNPs.out.vcf, params.refseq, indexRef.out) 
+			makePrimers(concatFinalSNPs.out.vcf, params.refseq, indexRef.out)
 		}
+		if (params.makePrimersMW == 1) { mWormhole(concatFinalSNPs.out.vcf, params.refseq, params.MW_slop) }
 		if (params.makeBaits == 1) { makeBaits(concatFinalSNPs.out.vcf, params.refseq) }
 		if (params.samples == 'NULL') {
 			plinkPCA(params.vcf, thinSNPs.out.vcf, fstFinalSNPs.out.vcf, piFinalSNPs.out.vcf, concatFinalSNPs.out.vcf)
